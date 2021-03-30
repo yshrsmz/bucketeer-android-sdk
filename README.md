@@ -99,8 +99,8 @@ Deletes the build directory and assembles all Release builds. (Create `./sample/
 
 ## SDK User Docs
 
-- [Tutorial](https://bucketeer.io/docs/#/sdk-tutorial-android)
-- [Integration](https://bucketeer.io/docs/#/sdk-reference-guides-android)
+- [Tutorial](https://bucketeer.io/docs/#/./client-side-sdk-tutorial-android)
+- [Integration](https://bucketeer.io/docs/#/./client-side-sdk-reference-guides-android)
 
 ## Samples 
 

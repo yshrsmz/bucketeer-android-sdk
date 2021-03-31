@@ -97,11 +97,27 @@ Deletes the build directory and assembles all Release builds. (Create `./sample/
 ./gradlew clean :sample:assembleRelease
 ```
 
+### Tips
+
+#### Use published SDK in Sample
+
+If you want to use published SDK instead of local one, change `local.properties` like below,
+
+(check SDK versions [here](https://bintray.com/bucketeer-bot/maven/jp.bucketeer.sdk-android))
+
+```
+# sample
+sample.use_released_sdk=true
+sample.sdk_version=X.Y.Z
+```
+
+then build and start the example app.
+
 ## SDK User Docs
 
 - [Tutorial](https://bucketeer.io/docs/#/./client-side-sdk-tutorial-android)
 - [Integration](https://bucketeer.io/docs/#/./client-side-sdk-reference-guides-android)
 
-## Samples 
+## Samples
 
 [Bucketeer Samples](https://github.com/ca-dp/bucketeer-samples)

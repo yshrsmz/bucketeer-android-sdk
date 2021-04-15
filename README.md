@@ -119,6 +119,10 @@ sample.sdk_version=X.Y.Z
 
 then build and start the sample app.
 
+## Contributing
+
+[CONTRIBUTING.md](./CONTRIBUTING.md)
+
 ## SDK User Docs
 
 - [Tutorial](https://bucketeer.io/docs/#/./client-side-sdk-tutorial-android)

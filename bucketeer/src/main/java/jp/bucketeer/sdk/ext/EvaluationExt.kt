@@ -7,7 +7,7 @@ import java.util.Locale
 
 inline fun <reified T : Any> EvaluationOuterClass.Evaluation?.getVariationValue(
     defaultValue: T): T {
-  val value = this?.variation?.value
+  val value = this?.variationValue
   val typedValue: T = if (value != null) {
     @Suppress("IMPLICIT_CAST_TO_ANY")
     val anyValue = when (T::class) {
@@ -44,10 +44,7 @@ inline fun <reified T : Any> EvaluationOuterClass.Evaluation?.getVariationValue(
         this == null -> {
           "Evaluation not found"
         }
-        this.variation == null -> {
-          "Variation not found"
-        }
-        this.variation.value == null -> {
+        this.variationValue == null -> {
           "Variation value not found"
         }
         else -> {

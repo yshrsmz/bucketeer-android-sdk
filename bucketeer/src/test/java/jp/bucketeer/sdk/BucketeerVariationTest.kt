@@ -1,7 +1,6 @@
 package jp.bucketeer.sdk
 
 import bucketeer.feature.EvaluationOuterClass
-import bucketeer.feature.VariationOuterClass
 import jp.bucketeer.sdk.ext.getVariationValue
 import org.amshove.kluent.shouldBeEqualTo
 import org.json.JSONObject

@@ -1,15 +1,6 @@
 package jp.bucketeer.sdk.evaluation
 
 import android.content.SharedPreferences
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doNothing
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
-import com.nhaarman.mockito_kotlin.whenever
 import jp.bucketeer.sdk.Api
 import jp.bucketeer.sdk.dispatcher.Dispatcher
 import jp.bucketeer.sdk.evaluation.db.CurrentEvaluationDao
@@ -26,6 +17,15 @@ import jp.bucketeer.sdk.userEvaluationsId1
 import jp.bucketeer.sdk.userEvaluationsId2
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -112,7 +112,7 @@ class LatestEvaluationActionCreatorTest {
     whenever(api.fetchEvaluation(user1, userEvaluationsId2)).doReturn(
         Api.Result.Success(responseFull))
     whenever(currentEvaluationActionCreator.getEvaluations(user1.id))
-        .doReturn(listOf(user1Evaluations.evaluationsList))
+        .doReturn(user1Evaluations.evaluationsList)
 
     evaluationActionCreator.refreshLatestEvaluationFromApi(user1)
 

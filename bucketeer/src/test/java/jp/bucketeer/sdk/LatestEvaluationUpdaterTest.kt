@@ -1,11 +1,11 @@
 package jp.bucketeer.sdk
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.timeout
-import com.nhaarman.mockito_kotlin.verify
 import jp.bucketeer.sdk.evaluation.LatestEvaluationActionCreator
 import jp.bucketeer.sdk.user.UserHolder
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verify
 import java.util.concurrent.Executors
 
 class LatestEvaluationUpdaterTest {

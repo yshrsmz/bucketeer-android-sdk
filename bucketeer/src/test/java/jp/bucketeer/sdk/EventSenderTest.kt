@@ -1,13 +1,6 @@
 package jp.bucketeer.sdk
 
 import bucketeer.event.client.EventOuterClass
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import jp.bucketeer.sdk.events.EventActionCreator
 import jp.bucketeer.sdk.events.EventStore
 import jp.bucketeer.sdk.events.toEvent
@@ -16,6 +9,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
@@ -32,14 +32,14 @@ class EventSenderTest {
   private val eventActionCreator = mock<EventActionCreator>().also {
     whenever(it.send(any(), any())).then {
       val nextEvents = eventObservableField.value.toMutableList()
-      val it = nextEvents.iterator()
+      val iterator = nextEvents.iterator()
       var index = 0
-      while (it.hasNext()) {
-        it.next()
+      while (iterator.hasNext()) {
+        iterator.next()
         if (index >= QUEUE_COUNT) {
           break
         }
-        it.remove()
+        iterator.remove()
         index++
       }
       eventObservableField.value = nextEvents

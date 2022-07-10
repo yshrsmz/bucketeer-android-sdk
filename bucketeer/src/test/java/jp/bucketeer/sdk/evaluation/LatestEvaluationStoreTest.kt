@@ -1,14 +1,14 @@
 package jp.bucketeer.sdk.evaluation
 
 import bucketeer.feature.EvaluationOuterClass
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import jp.bucketeer.sdk.dispatcher.Dispatcher
 import jp.bucketeer.sdk.evaluation.dto.LatestEvaluationChangedAction
 import jp.bucketeer.sdk.user1
 import jp.bucketeer.sdk.user1Evaluations
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 
 class LatestEvaluationStoreTest {
   @Test fun latestEvaluation_observe() {

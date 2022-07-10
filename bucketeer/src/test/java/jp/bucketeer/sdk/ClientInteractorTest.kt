@@ -1,11 +1,5 @@
 package jp.bucketeer.sdk
 
-import com.nhaarman.mockito_kotlin.doNothing
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import jp.bucketeer.sdk.evaluation.ClientInteractorActionCreator
 import jp.bucketeer.sdk.evaluation.CurrentStore
 import jp.bucketeer.sdk.evaluation.LatestEvaluationActionCreator
@@ -14,11 +8,17 @@ import jp.bucketeer.sdk.evaluation.dto.RefreshManuallyStateChangedAction
 import jp.bucketeer.sdk.events.EventActionCreator
 import jp.bucketeer.sdk.user.UserHolder
 import jp.bucketeer.sdk.util.ObservableField
-import org.junit.Assert.assertEquals
 import org.amshove.kluent.shouldBeEqualTo
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowLooper
 import java.util.Date

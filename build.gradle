@@ -18,7 +18,7 @@ buildscript {
       ANDROIDX_TEST_ESPRESSO: '3.2.0',
       ANDROIDX_TEST: '1.1.1',
       ANDROIDX_TEST_EXT: '1.1.1',
-      JUNIT: '4.13',
+      JUNIT: '4.13.2',
       KLUENT: '1.68',
       MOCKITO_ANDROID: '4.6.1',
       MOCKITO_KOTLIN: '4.0.0',

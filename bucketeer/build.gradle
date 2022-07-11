@@ -82,8 +82,14 @@ dependencies {
   testImplementation "org.mockito:mockito-core:$versions.MOCKITO_ANDROID"
   testImplementation "org.mockito.kotlin:mockito-kotlin:$versions.MOCKITO_KOTLIN"
   testImplementation "org.amshove.kluent:kluent-android:$versions.KLUENT"
+  testImplementation "androidx.test:core:$versions.ANDROIDX_TEST"
   androidTestImplementation "androidx.test.espresso:espresso-core:$versions.ANDROIDX_TEST_ESPRESSO"
-  androidTestImplementation "androidx.test.espresso:espresso-contrib:$versions.ANDROIDX_TEST_ESPRESSO"
+  androidTestImplementation("androidx.test.espresso:espresso-contrib:$versions.ANDROIDX_TEST_ESPRESSO") {
+    exclude group: 'com.google.protobuf', module: 'protobuf-lite'
+  }
+  // Explicitly depending on accessibility-test-framework to solve duplicate class error
+  // https://github.com/android/android-test/issues/861
+  androidTestImplementation("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:4.0.0")
   androidTestImplementation "androidx.test:rules:$versions.ANDROIDX_TEST"
   androidTestImplementation "androidx.test.ext:junit:$versions.ANDROIDX_TEST_EXT"
   androidTestImplementation "org.mockito:mockito-android:$versions.MOCKITO_ANDROID"
@@ -93,7 +99,7 @@ dependencies {
   androidTestImplementation("org.amshove.kluent:kluent-android:$versions.KLUENT") {
     exclude group: 'org.mockito', module: 'mockito-core'
   }
-  androidTestUtil "androidx.test:orchestrator:$versions.ANDROIDX_TEST"
+  androidTestUtil "androidx.test:orchestrator:$versions.ANDROIDX_TEST_ORCHESTRATOR"
 }
 
 protobuf {

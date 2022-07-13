@@ -14,7 +14,7 @@ buildscript {
       PROTOC_JAVALITE: '3.0.0',
       PROTOBUF_GRADLE: '0.8.19',
       // Google
-      GOOGLE_PLAY_SERVICES: '17.2.1',
+      GOOGLE_PLAY_SERVICES: '18.1.0',
       // Test
       ANDROIDX_TEST_ESPRESSO: '3.4.0',
       ANDROIDX_TEST: '1.4.0',

@@ -7,7 +7,8 @@ def properties = new Properties()
 properties.load(rootProject.file('local.properties').newDataInputStream())
 
 android {
-  defaultPublishConfig "release"
+  namespace = "jp.bucketeer.sdk"
+
   compileSdkVersion project.findProperty("android.compileSdkVersion") as int
   defaultConfig {
     def isTest = !gradle.startParameter.taskNames.findAll { it.contains("Test") }.isEmpty()

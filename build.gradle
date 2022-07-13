@@ -27,7 +27,7 @@ buildscript {
       ROBOLECTRIC: '4.8.1',
       // Publish
       DOKKA: '1.7.10',
-      NEXUS_STAGING: '0.22.0',
+      NEXUS_STAGING: '0.30.0',
     ]
   }
   repositories {

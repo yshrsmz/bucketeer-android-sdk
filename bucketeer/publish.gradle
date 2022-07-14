@@ -25,13 +25,21 @@ ext['signing.secretKeyRingFile'] = properties.getProperty('signing.secretKeyRing
 group = sdkGroupId
 version = sdkVersion
 
+// https://developer.android.com/studio/publish-library/configure-pub-variants
+android {
+  publishing {
+    singleVariant("release") {
+      withSourcesJar()
+    }
+  }
+}
+
 task androidSourcesJar(type: Jar) {
   archiveClassifier.set('sources')
   from android.sourceSets.main.java.srcDirs
 }
 
 dokkaHtml {
-//  outputFormat = 'html'
   outputDirectory.set(file("${project.buildDir}/dokka"))
 }
 
@@ -111,7 +119,6 @@ afterEvaluate {
             }
 
             // List all "compile" dependencies (for old Gradle)
-            configurations.compile.getAllDependencies().each { dep -> addDependency(dep, 'compile') }
             // List all "api" dependencies (for new Gradle) as "compile" dependencies
             configurations.api.getAllDependencies().each { dep -> addDependency(dep, 'compile') }
             // List all "implementation" dependencies (for new Gradle) as "runtime" dependencies

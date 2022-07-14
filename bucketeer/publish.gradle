@@ -30,14 +30,14 @@ task androidSourcesJar(type: Jar) {
   from android.sourceSets.main.java.srcDirs
 }
 
-dokka {
-  outputFormat = 'html' 
-  outputDirectory = "${project.buildDir}/dokka"
+dokkaHtml {
+//  outputFormat = 'html'
+  outputDirectory.set(file("${project.buildDir}/dokka"))
 }
 
-task javadocJar(type: Jar, dependsOn: dokka) {
+task javadocJar(type: Jar, dependsOn: dokkaHtml) {
   archiveClassifier.set('javadoc')
-  from dokka.outputDirectory
+  from dokkaHtml.outputDirectory
 }
 
 artifacts {

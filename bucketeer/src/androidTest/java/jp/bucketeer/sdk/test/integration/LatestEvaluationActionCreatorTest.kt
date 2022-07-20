@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.nhaarman.mockito_kotlin.mock
 import jp.bucketeer.sdk.Constants
 import jp.bucketeer.sdk.dispatcher.Dispatcher
 import jp.bucketeer.sdk.evaluation.LatestEvaluationActionCreator
@@ -13,6 +12,7 @@ import org.amshove.kluent.shouldBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest

@@ -5,26 +5,26 @@ import bucketeer.feature.ReasonOuterClass
 import bucketeer.gateway.Service.RegisterEventsResponse
 import com.google.protobuf.Any
 import com.google.protobuf.Duration
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
-import com.nhaarman.mockito_kotlin.whenever
 import jp.bucketeer.sdk.Api
 import jp.bucketeer.sdk.ApiClient
 import jp.bucketeer.sdk.dispatcher.Dispatcher
 import jp.bucketeer.sdk.evaluation1
 import jp.bucketeer.sdk.events.db.EventDao
 import jp.bucketeer.sdk.events.dto.EventListDataChangedAction
-import jp.bucketeer.sdk.metricsEvent1
 import jp.bucketeer.sdk.toBucketeerException
 import jp.bucketeer.sdk.user1
-import org.junit.Assert
-import org.amshove.kluent.any
-import org.amshove.kluent.mock
 import org.amshove.kluent.shouldBeEqualTo
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
+import java.util.Observable
 import java.util.Observer
 
 @RunWith(RobolectricTestRunner::class)
@@ -102,14 +102,16 @@ class EventActionCreatorTest {
             .build())
     )
 
-    val mockObserver = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> obj.events.run {
-          this.size shouldBeEqualTo 1
-          val event = this.first().event.unpackToEvaluationEvent()
-          event::class shouldBeEqualTo EventOuterClass.EvaluationEvent::class
+    val mockObserver = spy(object : Observer {
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> arg.events.run {
+            this.size shouldBeEqualTo 1
+            val event = this.first().event.unpackToEvaluationEvent()
+            event::class shouldBeEqualTo EventOuterClass.EvaluationEvent::class
+          }
+          else -> Assert.fail()
         }
-        else -> Assert.fail()
       }
     })
     dispatcher.addObserver(mockObserver)
@@ -143,16 +145,18 @@ class EventActionCreatorTest {
             .setEvent(goalEvent1.pack())
             .build()))
 
-    val mockObserver = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> {
-          obj.events.run {
-            this.size shouldBeEqualTo 1
-            val event = this.first().event.unpackToGoalEvent()
-            event::class shouldBeEqualTo EventOuterClass.GoalEvent::class
+    val mockObserver = spy(object : Observer {
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> {
+            arg.events.run {
+              this.size shouldBeEqualTo 1
+              val event = this.first().event.unpackToGoalEvent()
+              event::class shouldBeEqualTo EventOuterClass.GoalEvent::class
+            }
           }
+          else -> Assert.fail()
         }
-        else -> Assert.fail()
       }
     })
     dispatcher.addObserver(mockObserver)
@@ -176,16 +180,18 @@ class EventActionCreatorTest {
             .setEvent(metricsEvent1.pack())
             .build()))
 
-    val mockObserver = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> {
-          obj.events.run {
-            this.size shouldBeEqualTo 1
-            val event = this.first().event.unpackToMetricsEvent()
-            event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+    val mockObserver = spy(object : Observer {
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> {
+            arg.events.run {
+              this.size shouldBeEqualTo 1
+              val event = this.first().event.unpackToMetricsEvent()
+              event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+            }
           }
+          else -> Assert.fail()
         }
-        else -> Assert.fail()
       }
     })
     dispatcher.addObserver(mockObserver)
@@ -211,16 +217,18 @@ class EventActionCreatorTest {
             .setEvent(metricsEvent2.pack())
             .build()))
 
-    val mockObserver = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> {
-          obj.events.run {
-            this.size shouldBeEqualTo 1
-            val event = this.first().event.unpackToMetricsEvent()
-            event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+    val mockObserver = spy(object : Observer {
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> {
+            arg.events.run {
+              this.size shouldBeEqualTo 1
+              val event = this.first().event.unpackToMetricsEvent()
+              event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+            }
           }
+          else -> Assert.fail()
         }
-        else -> Assert.fail()
       }
     })
     dispatcher.addObserver(mockObserver)
@@ -246,16 +254,18 @@ class EventActionCreatorTest {
             .setEvent(metricsEvent3.pack())
             .build()))
 
-    val mockObserver = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> {
-          obj.events.run {
-            this.size shouldBeEqualTo 1
-            val event = this.first().event.unpackToMetricsEvent()
-            event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+    val mockObserver = spy(object : Observer {
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> {
+            arg.events.run {
+              this.size shouldBeEqualTo 1
+              val event = this.first().event.unpackToMetricsEvent()
+              event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+            }
           }
+          else -> Assert.fail()
         }
-        else -> Assert.fail()
       }
     })
     dispatcher.addObserver(mockObserver)
@@ -279,16 +289,18 @@ class EventActionCreatorTest {
             .setEvent(metricsEvent4.pack())
             .build()))
 
-    val mockObserver = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> {
-          obj.events.run {
-            this.size shouldBeEqualTo 1
-            val event = this.first().event.unpackToMetricsEvent()
-            event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+    val mockObserver=spy(object : Observer {
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> {
+            arg.events.run {
+              this.size shouldBeEqualTo 1
+              val event = this.first().event.unpackToMetricsEvent()
+              event::class shouldBeEqualTo EventOuterClass.MetricsEvent::class
+            }
           }
+          else -> Assert.fail()
         }
-        else -> Assert.fail()
       }
     })
     dispatcher.addObserver(mockObserver)
@@ -320,16 +332,19 @@ class EventActionCreatorTest {
         )
     )
 
-    val spyObserver: Observer = spy(Observer { _, obj ->
-      when (obj) {
-        is EventListDataChangedAction -> {
-          obj.events.size shouldBeEqualTo 6
-          obj.events[0].event.unpackToEvaluationEvent()
-          obj.events[1].event.unpackToGoalEvent()
-          obj.events[2].event.unpackToMetricsEvent()
-          obj.events[3].event.unpackToMetricsEvent()
-          obj.events[4].event.unpackToMetricsEvent()
-          obj.events[5].event.unpackToMetricsEvent()
+
+    val spyObserver: Observer = spy(object : Observer{
+      override fun update(o: Observable?, arg: kotlin.Any?) {
+        when (arg) {
+          is EventListDataChangedAction -> {
+            arg.events.size shouldBeEqualTo 6
+            arg.events[0].event.unpackToEvaluationEvent()
+            arg.events[1].event.unpackToGoalEvent()
+            arg.events[2].event.unpackToMetricsEvent()
+            arg.events[3].event.unpackToMetricsEvent()
+            arg.events[4].event.unpackToMetricsEvent()
+            arg.events[5].event.unpackToMetricsEvent()
+          }
         }
       }
     })

@@ -16,9 +16,9 @@ import jp.bucketeer.sdk.metricsEvent6
 import jp.bucketeer.sdk.metricsEvent7
 import jp.bucketeer.sdk.metricsEvent8
 import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeIn
 import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldNotEqual
+import org.amshove.kluent.shouldBeIn
+import org.amshove.kluent.shouldNotBeEqualTo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -156,7 +156,7 @@ class EventDaoImplTest {
   }
 
   private fun List<EventOuterClass.Event>.assertNotEmptyIds() {
-    forEach { it.id.isEmpty() shouldNotEqual true }
+    forEach { it.id.isEmpty() shouldNotBeEqualTo true }
   }
 }
 

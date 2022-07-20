@@ -1,15 +1,15 @@
 package jp.bucketeer.sdk.evaluation
 
 import bucketeer.feature.EvaluationOuterClass
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import jp.bucketeer.sdk.dispatcher.Dispatcher
 import jp.bucketeer.sdk.evaluation.dto.CurrentEvaluationListDataChangedAction
 import jp.bucketeer.sdk.user1
 import jp.bucketeer.sdk.user1Evaluations
-import org.amshove.kluent.mock
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 
 class CurrentStoreTest {
 

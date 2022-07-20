@@ -1,13 +1,13 @@
 package jp.bucketeer.sdk.events
 
 import bucketeer.event.client.EventOuterClass
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
 import jp.bucketeer.sdk.dispatcher.Dispatcher
 import jp.bucketeer.sdk.evaluationEvent1
 import jp.bucketeer.sdk.events.dto.EventListDataChangedAction
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 class EventStoreTest {
   @Test

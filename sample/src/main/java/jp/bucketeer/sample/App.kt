@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.facebook.stetho.Stetho
 import jp.bucketeer.sdk.Bucketeer
@@ -83,14 +83,16 @@ class App : Application(), LifecycleObserver {
 }
 
 internal class AppLifecycleObserver(
-    private val bucketeer: Bucketeer) : LifecycleObserver {
-  @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-  fun onResume() {
+  private val bucketeer: Bucketeer
+) : DefaultLifecycleObserver {
+
+  override fun onResume(owner: LifecycleOwner) {
+    super.onResume(owner)
     bucketeer.start()
   }
 
-  @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-  fun onPause() {
+  override fun onPause(owner: LifecycleOwner) {
+    super.onPause(owner)
     bucketeer.stop()
   }
 }

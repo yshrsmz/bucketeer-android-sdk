@@ -17,7 +17,7 @@ inline fun <reified T : Any> EvaluationOuterClass.Evaluation?.getVariationValue(
       Long::class -> value.toLongOrNull()
       Float::class -> value.toFloatOrNull()
       Double::class -> value.toDoubleOrNull()
-      Boolean::class -> when (value.toLowerCase(Locale.ENGLISH)) {
+      Boolean::class -> when (value.lowercase(Locale.ENGLISH)) {
         "true" -> true
         "false" -> false
         else -> null

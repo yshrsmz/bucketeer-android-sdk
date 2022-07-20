@@ -9,9 +9,9 @@ import jp.bucketeer.sdk.ext.getString
 import jp.bucketeer.sdk.user1
 import jp.bucketeer.sdk.user1Evaluations
 import jp.bucketeer.sdk.user2
-import org.junit.Assert.assertEquals
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

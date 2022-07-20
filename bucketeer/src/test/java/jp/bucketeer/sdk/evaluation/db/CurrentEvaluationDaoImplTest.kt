@@ -1,5 +1,6 @@
 package jp.bucketeer.sdk.evaluation.db
 
+import androidx.test.core.app.ApplicationProvider
 import bucketeer.feature.EvaluationOuterClass
 import jp.bucketeer.sdk.database.DatabaseOpenHelper
 import jp.bucketeer.sdk.evaluation1
@@ -14,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class CurrentEvaluationDaoImplTest {
@@ -22,7 +22,7 @@ class CurrentEvaluationDaoImplTest {
   private lateinit var openHelper: DatabaseOpenHelper
 
   @Before fun setUp() {
-    openHelper = DatabaseOpenHelper(RuntimeEnvironment.application, null)
+    openHelper = DatabaseOpenHelper(ApplicationProvider.getApplicationContext(), null)
     currentEvaluationDao = CurrentEvaluationDaoImpl(openHelper)
   }
 

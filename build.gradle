@@ -1,47 +1,11 @@
-buildscript {
-  ext {
-    versions = [
-      // Kotlin
-      KOTLIN: '1.7.10',
-      // Gradle
-      GRADLE: '7.2.1',
-      // gRPC
-      COMMON_PROTOS: '2.9.1',
-      GRPC  : '1.47.0',
-      JAVAX_ANNOTATION: '1.3.2',
-      PROTOC: '3.21.2',
-      PROTO_JAVALITE: '3.21.2',
-      PROTOC_JAVALITE: '3.0.0',
-      PROTOBUF_GRADLE: '0.8.19',
-      // Google
-      GOOGLE_PLAY_SERVICES: '18.1.0',
-      // Test
-      ANDROIDX_TEST_ESPRESSO: '3.4.0',
-      ANDROIDX_TEST: '1.4.0',
-      ANDROIDX_TEST_ORCHESTRATOR: '1.4.1',
-      ANDROIDX_TEST_EXT: '1.1.3',
-      JUNIT: '4.13.2',
-      KLUENT: '1.68',
-      MOCKITO_ANDROID: '4.6.1',
-      MOCKITO_KOTLIN: '4.0.0',
-      ROBOLECTRIC: '4.8.1',
-      // Publish
-      DOKKA: '1.7.10',
-      NEXUS_STAGING: '0.30.0',
-    ]
-  }
-  repositories {
-    google()
-    mavenCentral()
-    gradlePluginPortal()
-  }
-  dependencies {
-    classpath "com.android.tools.build:gradle:$versions.GRADLE"
-    classpath "com.google.protobuf:protobuf-gradle-plugin:$versions.PROTOBUF_GRADLE"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.KOTLIN"
-    classpath "org.jetbrains.dokka:dokka-gradle-plugin:$versions.DOKKA"
-    classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:$versions.NEXUS_STAGING"
-  }
+plugins {
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.kotlin.android) apply false
+  alias(libs.plugins.kotlin.kapt) apply false
+  alias(libs.plugins.kotlin.dokka) apply false
+  alias(libs.plugins.protobuf) apply false
+  alias(libs.plugins.nexusStaging)
 }
 
 allprojects {
@@ -54,5 +18,3 @@ allprojects {
 task clean(type: Delete) {
   delete rootProject.buildDir
 }
-
-apply plugin: 'io.codearte.nexus-staging'

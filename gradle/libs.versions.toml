@@ -19,7 +19,7 @@ proto-protocJavalite = { module = "com.google.protobuf:protoc-gen-javalite", ver
 proto-protocGrpc = { module = "io.grpc:protoc-gen-grpc-java", version.ref = "grpc" }
 # okhttp needs to be 2.7.x
 # https://github.com/grpc/grpc-java/releases/tag/v1.46.0
-okhttp = { module = "com.squareup.okhttp:okhttp", version = "2.7.5" }
+okhttp2 = { module = "com.squareup.okhttp:okhttp", version = "2.7.5" }
 
 googlePlayServices-basement = { module = "com.google.android.gms:play-services-basement", version = "18.1.0" }
 
@@ -54,3 +54,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version = "1.6.10" }
 publish = { id = "com.vanniktech.maven.publish", version = "0.21.0" }
 protobuf = { id = "com.google.protobuf", version = "0.8.19" }
+kotlinter = { id = "org.jmailen.kotlinter", version = "3.11.1" }

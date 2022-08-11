@@ -7,6 +7,7 @@ plugins {
   alias(libs.plugins.protobuf)
   alias(libs.plugins.kotlin.dokka)
   alias(libs.plugins.publish)
+  alias(libs.plugins.kotlinter)
 }
 
 def properties = new Properties()
@@ -68,7 +69,7 @@ android {
 dependencies {
   // gRPC
   implementation libs.grpc.okhttp
-  implementation libs.okhttp
+  implementation libs.okhttp2
   implementation libs.grpc.protobufLite
   implementation libs.grpc.stub
   compileOnly libs.javaxAnnotation

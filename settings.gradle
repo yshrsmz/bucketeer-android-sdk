@@ -8,4 +8,5 @@ pluginManagement {
 
 include ':bucketeer'
 include ':bucketeer2'
+include ':mocks'
 include ':sample'

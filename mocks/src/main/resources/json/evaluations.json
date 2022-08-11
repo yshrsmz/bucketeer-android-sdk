@@ -1,0 +1,102 @@
+{
+  "data": {
+    "state": 2,
+    "evaluations": {
+      "id": "15755734467413984062",
+      "evaluations": [
+        {
+          "id": "feature-flag-test-boolean:3:user-id",
+          "feature_id": "feature-flag-test-boolean",
+          "feature_version": 3,
+          "user_id": "user-id",
+          "variation_id": "c9119686-569c-42e0-8561-a3f6e3c8b6e4",
+          "variation": {
+            "id": "c9119686-569c-42e0-8561-a3f6e3c8b6e4",
+            "value": "true"
+          },
+          "reason": {
+            "type": 5
+          },
+          "variation_value": "true"
+        },
+        {
+          "id": "feature-flag-test-json:23:user-id",
+          "feature_id": "feature-flag-test-json",
+          "feature_version": 23,
+          "user_id": "user-id",
+          "variation_id": "bd274000-3adb-4f9c-b81d-064d81e2a4be",
+          "variation": {
+            "id": "bd274000-3adb-4f9c-b81d-064d81e2a4be",
+            "value": "{\n  \"name\": \"kenta-kozuka\"\n}"
+          },
+          "reason": {
+            "type": 3
+          },
+          "variation_value": "{\n  \"name\": \"kenta-kozuka\"\n}"
+        },
+        {
+          "id": "feature-flag-test-number:2:user-id",
+          "feature_id": "feature-flag-test-number",
+          "feature_version": 2,
+          "user_id": "user-id",
+          "variation_id": "4fd585a0-0ce2-4cce-a31a-1fe838ba8ed6",
+          "variation": {
+            "id": "4fd585a0-0ce2-4cce-a31a-1fe838ba8ed6",
+            "value": "4"
+          },
+          "reason": {
+            "type": 5
+          },
+          "variation_value": "4"
+        },
+        {
+          "id": "json-test-length:3:user-id",
+          "feature_id": "json-test-length",
+          "feature_version": 3,
+          "user_id": "user-id",
+          "variation_id": "df9b6b64-a373-4de2-9907-4b47f879cc67",
+          "variation": {
+            "id": "df9b6b64-a373-4de2-9907-4b47f879cc67",
+            "value": "{\n  \"os\":\"android_tv\"\n}"
+          },
+          "reason": {
+            "type": 5
+          },
+          "variation_value": "{\n  \"os\":\"android_tv\"\n}"
+        },
+        {
+          "id": "test-json-max-length:3:user-id",
+          "feature_id": "test-json-max-length",
+          "feature_version": 3,
+          "user_id": "user-id",
+          "variation_id": "c155bb94-2473-4951-a8d2-0f2dd13edf56",
+          "variation": {
+            "id": "c155bb94-2473-4951-a8d2-0f2dd13edf56",
+            "value": "{\n  \"os\":\"android_tv\"\n}"
+          },
+          "reason": {
+            "type": 5
+          },
+          "variation_value": "{\n  \"os\":\"android_tv\"\n}"
+        },
+        {
+          "id": "yuichi-test:9:user-id",
+          "feature_id": "yuichi-test",
+          "feature_version": 9,
+          "user_id": "user-id",
+          "variation_id": "74c0a1d8-13af-491e-a541-1710fb524fb7",
+          "variation": {
+            "id": "74c0a1d8-13af-491e-a541-1710fb524fb7",
+            "value": "false"
+          },
+          "reason": {
+            "type": 5
+          },
+          "variation_value": "false"
+        }
+      ],
+      "created_at": 1659440507
+    },
+    "user_evaluations_id": "15755734467413984062"
+  }
+}

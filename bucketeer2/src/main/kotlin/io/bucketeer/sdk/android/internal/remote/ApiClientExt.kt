@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android.internal.remote
 
 import io.bucketeer.sdk.android.BKTException
 import okhttp3.Response
+import kotlin.contracts.ExperimentalContracts
 
 fun Response.toBKTException(): BKTException? {
   if (isSuccessful) return null
@@ -32,3 +33,14 @@ fun Response.toBKTException(): BKTException? {
     else -> BKTException.UnknownException(null)
   }
 }
+
+@OptIn(ExperimentalContracts::class)
+inline fun <T> measureTimeMillisWithResult(block: () -> T): Pair<Long, T> {
+  kotlin.contracts.contract {
+    callsInPlace(block, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
+  }
+  val start = System.currentTimeMillis()
+  val result = block()
+  return (System.currentTimeMillis() - start) to result
+}
+

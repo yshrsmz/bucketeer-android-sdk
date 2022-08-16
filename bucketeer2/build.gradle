@@ -66,6 +66,8 @@ dependencies {
   implementation libs.moshi.kotlin
   ksp(libs.moshi.codegen)
 
+  implementation libs.androidx.process
+
   // Google Play Services
   compileOnly libs.googlePlayServices.basement
 

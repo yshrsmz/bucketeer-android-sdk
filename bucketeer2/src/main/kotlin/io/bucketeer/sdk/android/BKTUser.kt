@@ -3,7 +3,7 @@ package io.bucketeer.sdk.android
 import io.bucketeer.sdk.android.internal.model.User
 
 @Suppress("DataClassPrivateConstructor")
-data class BKTUser private constructor(
+data class BKTUser internal constructor(
   val id: String,
   var attributes: Map<String, String>
 ) {

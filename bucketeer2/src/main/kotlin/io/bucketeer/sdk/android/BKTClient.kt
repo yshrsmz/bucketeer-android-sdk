@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android
 
 import android.content.Context
 import org.json.JSONObject
+import java.util.concurrent.Future
 
 interface BKTClient {
 
@@ -22,6 +23,8 @@ interface BKTClient {
   fun setUserAttributes(attributes: Map<String, String>)
 
   fun fetchEvaluations(callback: FetchEvaluationsCallback?)
+
+  fun fetchEvaluations(): Future<Unit>
 
   fun flush()
 
@@ -56,56 +59,5 @@ interface BKTClient {
 
 //      client.fetchEvaluations()
     }
-  }
-}
-
-class BKTClientImpl(
-  private val context: Context,
-  private val config: BKTConfig,
-  private val user: BKTUser
-
-) : BKTClient {
-  override fun stringVariation(featureId: String, defaultValue: String): String {
-    TODO("Not yet implemented")
-  }
-
-  override fun intVariation(featureId: String, defaultValue: Int): Int {
-    TODO("Not yet implemented")
-  }
-
-  override fun doubleVariation(featureId: String, defaultValue: Double): Double {
-    TODO("Not yet implemented")
-  }
-
-  override fun booleanVariation(featureId: String, defaultValue: Boolean): Boolean {
-    TODO("Not yet implemented")
-  }
-
-  override fun jsonVariation(featureId: String, defaultValue: JSONObject): JSONObject {
-    TODO("Not yet implemented")
-  }
-
-  override fun track(goalId: String, value: Double) {
-    TODO("Not yet implemented")
-  }
-
-  override fun currentUser(): BKTUser {
-    TODO("Not yet implemented")
-  }
-
-  override fun setUserAttributes(attributes: Map<String, String>) {
-    TODO("Not yet implemented")
-  }
-
-  override fun fetchEvaluations(callback: BKTClient.FetchEvaluationsCallback?) {
-    TODO("Not yet implemented")
-  }
-
-  override fun flush() {
-    TODO("Not yet implemented")
-  }
-
-  override fun evaluationDetails(featureId: String): BKTEvaluation? {
-    TODO("Not yet implemented")
   }
 }

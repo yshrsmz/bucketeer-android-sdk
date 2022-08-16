@@ -10,7 +10,7 @@ private const val DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 3_600_000 /
 private const val MIN_POLLING_INTERVAL_MILLIS: Long = 300_000 // 5 minutes
 private const val MIN_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 1_200_000 // 20 minutes
 
-data class BKTConfig(
+data class BKTConfig internal constructor(
   val apiKey: String,
   val endpoint: String,
   val featureTag: String,
@@ -20,6 +20,10 @@ data class BKTConfig(
   val backgroundPollingInterval: Long,
   val debugMode: Boolean
 ) {
+
+  companion object {
+    fun builder(): Builder = Builder()
+  }
 
   class Builder() {
     var apiKey: String? = null

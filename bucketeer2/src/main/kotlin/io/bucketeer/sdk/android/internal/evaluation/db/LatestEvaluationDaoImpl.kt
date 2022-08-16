@@ -14,7 +14,6 @@ import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationEntity.Co
 import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationEntity.Companion.COLUMN_USER_ID
 import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Evaluation
-import io.bucketeer.sdk.android.internal.model.User
 
 internal class LatestEvaluationDaoImpl(
   private val sqLiteOpenHelper: SupportSQLiteOpenHelper,
@@ -23,12 +22,12 @@ internal class LatestEvaluationDaoImpl(
 
   private val adapter = moshi.adapter(Evaluation::class.java)
 
-  override fun put(user: User, list: List<Evaluation>) {
+  override fun put(userId: String, list: List<Evaluation>) {
     sqLiteOpenHelper.writableDatabase.transaction {
       list.forEach { evaluation ->
-        val affectedRow = update(this@transaction, user, evaluation)
+        val affectedRow = update(this@transaction, userId, evaluation)
         if (affectedRow == 0) {
-          insert(this@transaction, user, evaluation)
+          insert(this@transaction, userId, evaluation)
         }
       }
     }
@@ -36,11 +35,11 @@ internal class LatestEvaluationDaoImpl(
 
   private fun insert(
     database: SupportSQLiteDatabase,
-    user: User,
+    userId: String,
     evaluation: Evaluation
   ): Long {
     val contentValue = ContentValues().apply {
-      put(COLUMN_USER_ID, user.id)
+      put(COLUMN_USER_ID, userId)
       put(COLUMN_FEATURE_ID, evaluation.feature_id)
       put(COLUMN_EVALUATION, adapter.toJson(evaluation))
     }
@@ -49,7 +48,7 @@ internal class LatestEvaluationDaoImpl(
 
   private fun update(
     database: SupportSQLiteDatabase,
-    user: User,
+    userId: String,
     evaluation: Evaluation
   ): Int {
     val contentValues = ContentValues().apply {
@@ -60,17 +59,17 @@ internal class LatestEvaluationDaoImpl(
       SQLiteDatabase.CONFLICT_REPLACE,
       contentValues,
       "$COLUMN_USER_ID=? AND $COLUMN_FEATURE_ID=?",
-      arrayOf(user.id, evaluation.feature_id)
+      arrayOf(userId, evaluation.feature_id)
     )
   }
 
-  override fun get(user: User): List<Evaluation> {
+  override fun get(userId: String): List<Evaluation> {
     val projection = arrayOf(COLUMN_USER_ID, COLUMN_EVALUATION)
     val c = sqLiteOpenHelper.readableDatabase.select(
       table = TABLE_NAME,
       columns = projection,
       selection = "$COLUMN_USER_ID=?",
-      selectionArgs = arrayOf(user.id)
+      selectionArgs = arrayOf(userId)
     )
 
     return c.use {
@@ -82,23 +81,23 @@ internal class LatestEvaluationDaoImpl(
 
   private fun deleteAll(
     database: SupportSQLiteDatabase,
-    user: User
+    userId: String
   ) {
     database.delete(
       TABLE_NAME,
       "$COLUMN_USER_ID=?",
-      arrayOf(user.id)
+      arrayOf(userId)
     )
   }
 
   override fun deleteAllAndInsert(
-    user: User,
+    userId: String,
     list: List<Evaluation>
   ): Boolean {
     sqLiteOpenHelper.writableDatabase.transaction {
-      deleteAll(this, user)
+      deleteAll(this, userId)
       list.forEach {
-        if (insert(this, user, it) == -1L) {
+        if (insert(this, userId, it) == -1L) {
           return false
         }
       }

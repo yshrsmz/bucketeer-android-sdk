@@ -8,6 +8,12 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.Constants
 import io.bucketeer.sdk.android.internal.database.createDatabase
+import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationDao
+import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationDaoImpl
+import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationDao
+import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationDaoImpl
+import io.bucketeer.sdk.android.internal.events.db.EventDao
+import io.bucketeer.sdk.android.internal.events.db.EventDaoImpl
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventAdapterFactory
 import io.bucketeer.sdk.android.internal.model.jsonadapter.EventTypeAdapter
 import io.bucketeer.sdk.android.internal.model.jsonadapter.MetricsEventAdapterFactory
@@ -25,13 +31,24 @@ internal class DataModule(
   featureTag: String
 ) {
 
-  private val moshi: Moshi by lazy { moshi() }
+  internal val moshi: Moshi by lazy { moshi() }
 
-  @VisibleForTesting
   internal val api: ApiClient = ApiClientImpl(endpoint, apiKey, featureTag, moshi)
 
   private val sqliteOpenHelper: SupportSQLiteOpenHelper by lazy {
     createDatabase(application)
+  }
+
+  internal val currentEvaluationDao: CurrentEvaluationDao by lazy {
+    CurrentEvaluationDaoImpl(sqliteOpenHelper, moshi)
+  }
+
+  internal val latestEvaluationDao: LatestEvaluationDao by lazy {
+    LatestEvaluationDaoImpl(sqliteOpenHelper, moshi)
+  }
+
+  internal val eventDao: EventDao by lazy {
+    EventDaoImpl(sqliteOpenHelper, moshi)
   }
 
   internal val sharedPreferences: SharedPreferences by lazy {

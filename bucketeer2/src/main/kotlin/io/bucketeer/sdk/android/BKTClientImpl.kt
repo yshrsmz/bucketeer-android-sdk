@@ -6,6 +6,7 @@ import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.logd
+import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
 import io.bucketeer.sdk.android.internal.user.UserHolder
 import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.internal.user.toUser
@@ -19,18 +20,15 @@ internal class BKTClientImpl(
   private val config: BKTConfig,
   user: BKTUser,
   private val userHolder: UserHolder = UserHolder(user.toUser()),
+  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
   private val dataModule: DataModule = DataModule(
     application = context.applicationContext as Application,
     apiKey = config.apiKey,
     endpoint = config.endpoint,
     featureTag = config.featureTag
   ),
-  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
   private val interactorModule: InteractorModule = InteractorModule(
-    apiClient = dataModule::api,
-    currentEvaluationDao = dataModule::currentEvaluationDao,
-    latestEvaluationDao = dataModule::latestEvaluationDao,
-    sharedPrefs = dataModule::sharedPreferences,
+    dataModule = dataModule,
     executor = { executor }
   ),
 ) : BKTClient {
@@ -56,7 +54,16 @@ internal class BKTClientImpl(
   }
 
   override fun track(goalId: String, value: Double) {
-    TODO("Not yet implemented")
+    val userId = userHolder.userId
+    val featureTag = config.featureTag
+    executor.execute {
+      interactorModule.eventInteractor.trackGoalEvent(
+        goalId = goalId,
+        value = value,
+        featureTag = featureTag,
+        userId = userId
+      )
+    }
   }
 
   override fun currentUser(): BKTUser {
@@ -73,7 +80,27 @@ internal class BKTClientImpl(
 
   override fun fetchEvaluations(): Future<Unit> {
     return executor.submit<Unit> {
-      interactorModule.evaluationInteractor.fetch(user = userHolder.get())
+      val result = interactorModule.evaluationInteractor.fetch(user = userHolder.get())
+
+      executor.execute {
+        val interactor = interactorModule.eventInteractor
+        when (result) {
+          is GetEvaluationsResult.Success -> {
+            interactor.trackFetchEvaluationsSuccess(
+              mills = result.millis,
+              sizeByte = result.sizeByte,
+              featureTag = result.featureTag,
+              state = result.state
+            )
+          }
+          is GetEvaluationsResult.Failure -> {
+            interactor.trackFetchEvaluationsFailure(
+              featureTag = result.featureTag,
+              error = result.error
+            )
+          }
+        }
+      }
     }
   }
 
@@ -104,6 +131,7 @@ internal class BKTClientImpl(
 
     if (raw != null) {
       // TODO track evaluation event
+      executor.execute { }
     } else {
       // TODO: track default evaluation event
     }

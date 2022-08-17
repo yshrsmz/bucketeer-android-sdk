@@ -7,7 +7,7 @@ sealed class GetEvaluationsResult {
   data class Success(
     val value: GetEvaluationsResponse,
     val millis: Long,
-    val sizeByte: Long,
+    val sizeByte: Int,
     val featureTag: String,
     val state: UserEvaluationsState
   ) : GetEvaluationsResult()

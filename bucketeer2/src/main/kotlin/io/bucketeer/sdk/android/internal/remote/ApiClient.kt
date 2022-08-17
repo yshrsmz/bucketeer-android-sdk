@@ -73,7 +73,7 @@ internal class ApiClientImpl(
       GetEvaluationsResult.Success(
         value = result,
         millis = millis,
-        sizeByte = response.body?.contentLength() ?: -1,
+        sizeByte = (response.body?.contentLength() ?: -1).toInt(),
         featureTag = featureTag,
         state = result.data.state
       )

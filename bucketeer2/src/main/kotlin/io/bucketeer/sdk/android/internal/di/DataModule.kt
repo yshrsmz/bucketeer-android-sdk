@@ -6,7 +6,11 @@ import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.internal.Clock
+import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.internal.IdGenerator
+import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.database.createDatabase
 import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationDao
 import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationDaoImpl
@@ -31,9 +35,13 @@ internal class DataModule(
   featureTag: String
 ) {
 
-  internal val moshi: Moshi by lazy { moshi() }
+  val clock: Clock by lazy { ClockImpl() }
 
-  internal val api: ApiClient = ApiClientImpl(endpoint, apiKey, featureTag, moshi)
+  val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }
+
+  val moshi: Moshi by lazy { moshi() }
+
+  val api: ApiClient = ApiClientImpl(endpoint, apiKey, featureTag, moshi)
 
   private val sqliteOpenHelper: SupportSQLiteOpenHelper by lazy {
     createDatabase(application)

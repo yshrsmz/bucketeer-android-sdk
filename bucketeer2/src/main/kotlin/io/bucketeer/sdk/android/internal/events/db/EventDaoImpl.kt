@@ -2,11 +2,13 @@ package io.bucketeer.sdk.android.internal.events.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
+import io.bucketeer.sdk.android.internal.database.transaction
 import io.bucketeer.sdk.android.internal.events.EventEntity.Companion.COLUMN_EVENT
 import io.bucketeer.sdk.android.internal.events.EventEntity.Companion.COLUMN_ID
 import io.bucketeer.sdk.android.internal.events.EventEntity.Companion.TABLE_NAME
@@ -32,16 +34,15 @@ internal class EventDaoImpl(
 //  }
 
   override fun addEvent(event: Event) {
-    val contentValues = ContentValues().apply {
-      put(COLUMN_ID, event.id)
-      put(COLUMN_EVENT, eventAdapter.toJson(event))
-    }
+    addEventInternal(sqLiteOpenHelper.writableDatabase, event)
+  }
 
-    sqLiteOpenHelper.writableDatabase.insert(
-      TABLE_NAME,
-      SQLiteDatabase.CONFLICT_REPLACE,
-      contentValues
-    )
+  override fun addEvents(events: List<Event>) {
+    sqLiteOpenHelper.writableDatabase.transaction {
+      events.forEach { event ->
+        addEventInternal(this, event)
+      }
+    }
   }
 
   override fun getEvents(): List<Event> {
@@ -65,6 +66,19 @@ internal class EventDaoImpl(
       TABLE_NAME,
       "$COLUMN_ID IN ($valuesIn)",
       whereArgs
+    )
+  }
+
+  private fun addEventInternal(writableDatabase: SupportSQLiteDatabase, event: Event) {
+    val contentValues = ContentValues().apply {
+      put(COLUMN_ID, event.id)
+      put(COLUMN_EVENT, eventAdapter.toJson(event))
+    }
+
+    writableDatabase.insert(
+      TABLE_NAME,
+      SQLiteDatabase.CONFLICT_REPLACE,
+      contentValues
     )
   }
 }

@@ -1,26 +1,28 @@
 package io.bucketeer.sdk.android.internal.di
 
-import android.content.SharedPreferences
 import io.bucketeer.sdk.android.internal.evaluation.EvaluationInteractor
-import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationDao
-import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationDao
-import io.bucketeer.sdk.android.internal.remote.ApiClient
+import io.bucketeer.sdk.android.internal.events.EventInteractor
 import java.util.concurrent.Executor
 
 internal class InteractorModule(
-  private val apiClient: () -> ApiClient,
-  private val currentEvaluationDao: () -> CurrentEvaluationDao,
-  private val latestEvaluationDao: () -> LatestEvaluationDao,
-  private val sharedPrefs: () -> SharedPreferences,
+  private val dataModule: DataModule,
   private val executor: () -> Executor,
 ) {
-  internal val evaluationInteractor: EvaluationInteractor by lazy {
+  val evaluationInteractor: EvaluationInteractor by lazy {
     EvaluationInteractor(
-      apiClient = apiClient(),
-      currentEvaluationDao = currentEvaluationDao(),
-      latestEvaluationDao = latestEvaluationDao(),
-      sharedPrefs = sharedPrefs(),
+      apiClient = dataModule.api,
+      currentEvaluationDao = dataModule.currentEvaluationDao,
+      latestEvaluationDao = dataModule.latestEvaluationDao,
+      sharedPrefs = dataModule.sharedPreferences,
       executor = executor()
+    )
+  }
+
+  val eventInteractor: EventInteractor by lazy {
+    EventInteractor(
+      eventDao = dataModule.eventDao,
+      clock = dataModule.clock,
+      idGenerator = dataModule.idGenerator
     )
   }
 }

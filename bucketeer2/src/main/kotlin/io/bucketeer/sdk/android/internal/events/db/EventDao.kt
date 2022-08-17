@@ -8,6 +8,7 @@ internal interface EventDao {
 //
 //  fun addEvent(metricsEvent: Event<EventData.MetricsEvent>)
   fun addEvent(event: Event)
+  fun addEvents(events: List<Event>)
   fun getEvents(): List<Event>
 
   /** delete rows by ID */

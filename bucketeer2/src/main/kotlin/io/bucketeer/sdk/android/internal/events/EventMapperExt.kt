@@ -29,7 +29,6 @@ internal fun newGoalEvent(
       tag = featureTag,
       source_id = SourceID.ANDROID
     ),
-    environment_namespace = "",
     type = EventType.GOAL
   )
 }
@@ -54,7 +53,6 @@ internal fun newGetEvaluationLatencyMetricsEvent(
         duration = Duration(millis = mills)
       )
     ),
-    environment_namespace = "",
     type = EventType.METRICS,
   )
 }
@@ -79,7 +77,6 @@ internal fun newGetEvaluationSizeMetricsEvent(
         size_byte = sizeByte
       )
     ),
-    environment_namespace = "",
     type = EventType.METRICS,
   )
 }
@@ -98,7 +95,6 @@ internal fun newTimeoutErrorCountMetricsEvent(
         tag = featureTag
       )
     ),
-    environment_namespace = "",
     type = EventType.METRICS
   )
 }
@@ -117,7 +113,6 @@ internal fun newInternalErrorCountMetricsEvent(
         tag = featureTag
       )
     ),
-    environment_namespace = "",
     type = EventType.METRICS
   )
 }

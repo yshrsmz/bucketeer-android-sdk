@@ -54,14 +54,14 @@ internal class BKTClientImpl(
   }
 
   override fun track(goalId: String, value: Double) {
-    val userId = userHolder.userId
+    val user = userHolder.get()
     val featureTag = config.featureTag
     executor.execute {
       interactorModule.eventInteractor.trackGoalEvent(
+        featureTag = featureTag,
+        user = user,
         goalId = goalId,
         value = value,
-        featureTag = featureTag,
-        userId = userId
       )
     }
   }
@@ -87,9 +87,9 @@ internal class BKTClientImpl(
         when (result) {
           is GetEvaluationsResult.Success -> {
             interactor.trackFetchEvaluationsSuccess(
+              featureTag = result.featureTag,
               mills = result.millis,
               sizeByte = result.sizeByte,
-              featureTag = result.featureTag,
               state = result.state
             )
           }
@@ -104,13 +104,16 @@ internal class BKTClientImpl(
     }
   }
 
+  // should we return Future?
   override fun flush() {
-    TODO("Not yet implemented")
+    executor.execute {
+      interactorModule.eventInteractor.sendEvents(force = true)
+    }
   }
 
   override fun evaluationDetails(featureId: String): BKTEvaluation? {
     val raw = interactorModule.evaluationInteractor
-      .getLatestAndRefreshCurrent(userHolder.get().id, featureId) ?: return null
+      .getLatestAndRefreshCurrent(userHolder.userId, featureId) ?: return null
 
     return BKTEvaluation(
       id = raw.id,
@@ -127,13 +130,26 @@ internal class BKTClientImpl(
     logd { "Bucketeer.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
 
     val raw = interactorModule.evaluationInteractor
-      .getLatestAndRefreshCurrent(userHolder.get().id, featureId)
+      .getLatestAndRefreshCurrent(userHolder.userId, featureId)
 
+    val user = userHolder.get()
+    val featureTag = config.featureTag
     if (raw != null) {
-      // TODO track evaluation event
-      executor.execute { }
+      executor.execute {
+        interactorModule.eventInteractor.trackEvaluationEvent(
+          featureTag = featureTag,
+          user = user,
+          evaluation = raw
+        )
+      }
     } else {
-      // TODO: track default evaluation event
+      executor.execute {
+        interactorModule.eventInteractor.trackDefaultEvaluationEvent(
+          featureTag = featureTag,
+          user = user,
+          featureId = featureId
+        )
+      }
     }
 
     return raw.getVariationValue(defaultValue)

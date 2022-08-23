@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android.internal.events
+package io.bucketeer.sdk.android.internal.event
 
 import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event

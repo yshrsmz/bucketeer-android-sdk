@@ -1,7 +1,7 @@
 package io.bucketeer.sdk.android.internal.di
 
 import io.bucketeer.sdk.android.internal.evaluation.EvaluationInteractor
-import io.bucketeer.sdk.android.internal.events.EventInteractor
+import io.bucketeer.sdk.android.internal.event.EventInteractor
 import java.util.concurrent.Executor
 
 internal class InteractorModule(

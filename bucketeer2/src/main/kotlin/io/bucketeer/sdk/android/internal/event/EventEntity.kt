@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android.internal.events
+package io.bucketeer.sdk.android.internal.event
 
 internal data class EventEntity(
   val event: ByteArray

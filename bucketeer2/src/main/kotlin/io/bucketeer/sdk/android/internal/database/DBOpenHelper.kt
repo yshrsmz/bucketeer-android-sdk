@@ -7,7 +7,7 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import io.bucketeer.sdk.android.internal.database.migration.Migration1to2
 import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity
 import io.bucketeer.sdk.android.internal.evaluation.db.LatestEvaluationEntity
-import io.bucketeer.sdk.android.internal.events.EventEntity
+import io.bucketeer.sdk.android.internal.event.EventEntity
 
 class OpenHelperCallback : SupportSQLiteOpenHelper.Callback(VERSION) {
 

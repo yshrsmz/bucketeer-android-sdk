@@ -1,4 +1,4 @@
-package io.bucketeer.sdk.android.internal.events.db
+package io.bucketeer.sdk.android.internal.event.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
@@ -9,9 +9,9 @@ import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
 import io.bucketeer.sdk.android.internal.database.transaction
-import io.bucketeer.sdk.android.internal.events.EventEntity.Companion.COLUMN_EVENT
-import io.bucketeer.sdk.android.internal.events.EventEntity.Companion.COLUMN_ID
-import io.bucketeer.sdk.android.internal.events.EventEntity.Companion.TABLE_NAME
+import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_EVENT
+import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.COLUMN_ID
+import io.bucketeer.sdk.android.internal.event.EventEntity.Companion.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Event
 
 internal class EventDaoImpl(

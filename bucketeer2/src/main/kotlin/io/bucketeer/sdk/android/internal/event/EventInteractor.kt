@@ -1,10 +1,12 @@
-package io.bucketeer.sdk.android.internal.events
+package io.bucketeer.sdk.android.internal.event
 
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
-import io.bucketeer.sdk.android.internal.events.db.EventDao
+import io.bucketeer.sdk.android.internal.event.db.EventDao
 import io.bucketeer.sdk.android.internal.logd
+import io.bucketeer.sdk.android.internal.model.Evaluation
 import io.bucketeer.sdk.android.internal.model.Event
+import io.bucketeer.sdk.android.internal.model.User
 import io.bucketeer.sdk.android.internal.model.UserEvaluationsState
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.RegisterEventsResult
@@ -21,18 +23,34 @@ internal class EventInteractor(
 ) {
   val events: ObservableField<List<Event>> = ObservableField(emptyList())
 
-  fun trackGoalEvent(goalId: String, value: Double, featureTag: String, userId: String) {
+  fun trackEvaluationEvent(featureTag: String, user: User, evaluation: Evaluation) {
     eventDao.addEvent(
-      newGoalEvent(clock, idGenerator, goalId, value, featureTag, userId)
+      newEvaluationEvent(clock, idGenerator, featureTag, user, evaluation)
+    )
+
+    events.value = eventDao.getEvents()
+  }
+
+  fun trackDefaultEvaluationEvent(featureTag: String, user: User, featureId: String) {
+    eventDao.addEvent(
+      newDefaultEvaluationEvent(clock, idGenerator, featureTag, user, featureId)
+    )
+
+    events.value = eventDao.getEvents()
+  }
+
+  fun trackGoalEvent(featureTag: String, user: User, goalId: String, value: Double) {
+    eventDao.addEvent(
+      newGoalEvent(clock, idGenerator, goalId, value, featureTag, user)
     )
 
     events.value = eventDao.getEvents()
   }
 
   fun trackFetchEvaluationsSuccess(
+    featureTag: String,
     mills: Long,
     sizeByte: Int,
-    featureTag: String,
     state: UserEvaluationsState
   ) {
     eventDao.addEvents(

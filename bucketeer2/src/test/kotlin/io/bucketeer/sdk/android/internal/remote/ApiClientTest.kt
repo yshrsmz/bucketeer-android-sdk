@@ -38,7 +38,7 @@ class ApiClientTest {
       endpoint = endpoint,
       apiKey = "this_is_api_key",
       featureTag = "android",
-      moshi = DataModule.moshi()
+      moshi = DataModule.createMoshi()
     )
 
     val user = BKTUser.Builder()
@@ -52,9 +52,9 @@ class ApiClientTest {
       userEvaluationsId = "this_is_user_evaluations_id"
     )
 
-    assertThat(result.isSuccess).isTrue()
+    assertThat(result).isInstanceOf(GetEvaluationsResult.Success::class.java)
 
-    val response = requireNotNull(result.getOrNull())
+    val response = requireNotNull((result as GetEvaluationsResult.Success).value)
 
     assertThat(response.data.state).isEqualTo(UserEvaluationsState.FULL)
 

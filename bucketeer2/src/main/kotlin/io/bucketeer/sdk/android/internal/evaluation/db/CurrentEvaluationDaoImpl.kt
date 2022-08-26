@@ -8,10 +8,10 @@ import io.bucketeer.sdk.android.internal.database.asSequence
 import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
 import io.bucketeer.sdk.android.internal.database.transaction
-import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.Companion.COLUMN_EVALUATION
-import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.Companion.COLUMN_FEATURE_ID
-import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.Companion.COLUMN_USER_ID
-import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.Companion.TABLE_NAME
+import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.COLUMN_EVALUATION
+import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.COLUMN_FEATURE_ID
+import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.COLUMN_USER_ID
+import io.bucketeer.sdk.android.internal.evaluation.db.CurrentEvaluationEntity.TABLE_NAME
 import io.bucketeer.sdk.android.internal.model.Evaluation
 
 internal class CurrentEvaluationDaoImpl(
@@ -38,7 +38,7 @@ internal class CurrentEvaluationDaoImpl(
     sqLiteOpenHelper.writableDatabase.transaction {
       val valuesNotIn = List(featureIds.count(), { "?" }).joinToString(separator = ",")
       val whereClause = "$COLUMN_USER_ID = ? AND " +
-        "$COLUMN_FEATURE_ID NOT IN ($valuesNotIn)"
+          "$COLUMN_FEATURE_ID NOT IN ($valuesNotIn)"
       val whereArgs = arrayOf(userId, *featureIds.toTypedArray())
 
       delete(

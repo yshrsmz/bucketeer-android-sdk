@@ -28,6 +28,7 @@ internal class BKTClientImpl(
     featureTag = config.featureTag
   ),
   private val interactorModule: InteractorModule = InteractorModule(
+    config = config,
     dataModule = dataModule,
     executor = { executor }
   ),

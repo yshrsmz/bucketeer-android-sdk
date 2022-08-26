@@ -39,7 +39,7 @@ internal class DataModule(
 
   val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }
 
-  val moshi: Moshi by lazy { moshi() }
+  val moshi: Moshi by lazy { createMoshi() }
 
   val api: ApiClient = ApiClientImpl(endpoint, apiKey, featureTag, moshi)
 
@@ -65,7 +65,7 @@ internal class DataModule(
 
   companion object {
     @VisibleForTesting
-    internal fun moshi(): Moshi {
+    internal fun createMoshi(): Moshi {
       return Moshi.Builder()
         .add(EventTypeAdapter())
         .add(MetricsEventTypeAdapter())

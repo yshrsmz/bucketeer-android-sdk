@@ -66,9 +66,9 @@ class OpenHelperCallback : SupportSQLiteOpenHelper.Callback(VERSION) {
   }
 }
 
-fun createDatabase(context: Context): SupportSQLiteOpenHelper {
+fun createDatabase(context: Context, fileName: String? = OpenHelperCallback.FILE_NAME): SupportSQLiteOpenHelper {
   val config = SupportSQLiteOpenHelper.Configuration.builder(context)
-    .name(OpenHelperCallback.FILE_NAME)
+    .name(fileName)
     .callback(OpenHelperCallback())
     .build()
 

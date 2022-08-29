@@ -21,18 +21,6 @@ internal class EventDaoImpl(
 
   private val eventAdapter = moshi.adapter(Event::class.java)
 
-//  override fun addEvent(goalEvent: EventOuterClass.GoalEvent) {
-//    addEvent(goalEvent.toEvent())
-//  }
-//
-//  override fun addEvent(evaluationEvent: EventOuterClass.EvaluationEvent) {
-//    addEvent(evaluationEvent.toEvent())
-//  }
-//
-//  override fun addEvent(metricsEvent: EventOuterClass.MetricsEvent) {
-//    addEvent(metricsEvent.toEvent())
-//  }
-
   override fun addEvent(event: Event) {
     addEventInternal(sqLiteOpenHelper.writableDatabase, event)
   }

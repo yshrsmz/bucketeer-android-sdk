@@ -10,8 +10,7 @@ import io.bucketeer.sdk.android.internal.database.getString
 import io.bucketeer.sdk.android.internal.database.select
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.model.Evaluation
-import io.bucketeer.sdk.android.mocks.evaluation1
-import io.bucketeer.sdk.android.mocks.user1Evaluations
+import io.bucketeer.sdk.android.mocks.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -102,7 +101,94 @@ class CurrentEvaluationDaoImplTest {
 
   @Test
   fun `deleteNotIn - delete all`() {
-    
+    dao.upsertEvaluation(user1Evaluations.evaluations[0])
+    dao.upsertEvaluation(user1Evaluations.evaluations[1])
+    dao.upsertEvaluation(user2Evaluations.evaluations[0])
+
+    dao.deleteNotIn("user id 1", listOf("unknown id1", "unknown id2"))
+
+    val evaluation1 = dao.getEvaluations("user id 1")
+    val evaluation2 = dao.getEvaluations("user id 2")
+
+    assertThat(evaluation1).isEmpty()
+    assertThat(evaluation2).hasSize(1)
+    assertThat(evaluation2[0].feature_id).isEqualTo("test-feature-3")
+  }
+
+  @Test
+  fun `deleteNotIn - delete 1 item`() {
+    dao.upsertEvaluation(user1Evaluations.evaluations[0])
+    dao.upsertEvaluation(user1Evaluations.evaluations[1])
+    dao.upsertEvaluation(user2Evaluations.evaluations[0])
+
+    dao.deleteNotIn("user id 1", listOf("test-feature-1", "unknown id1"))
+
+    val evaluation1 = dao.getEvaluations("user id 1")
+    val evaluation2 = dao.getEvaluations("user id 2")
+
+    assertThat(evaluation1).hasSize(1)
+    assertThat(evaluation1[0].feature_id).isEqualTo("test-feature-1")
+
+    assertThat(evaluation2).hasSize(1)
+    assertThat(evaluation2[0].feature_id).isEqualTo("test-feature-3")
+  }
+
+  @Test
+  fun `deleteNotIn - delete none`() {
+    dao.upsertEvaluation(user1Evaluations.evaluations[0])
+    dao.upsertEvaluation(user1Evaluations.evaluations[1])
+    dao.upsertEvaluation(user2Evaluations.evaluations[0])
+
+    dao.deleteNotIn("user id 1", listOf("test-feature-1", "test-feature-2"))
+
+    val evaluation1 = dao.getEvaluations("user id 1")
+    val evaluation2 = dao.getEvaluations("user id 2")
+
+    assertThat(evaluation1).hasSize(2)
+    assertThat(evaluation1[0].feature_id).isEqualTo("test-feature-1")
+    assertThat(evaluation1[1].feature_id).isEqualTo("test-feature-2")
+
+    assertThat(evaluation2).hasSize(1)
+    assertThat(evaluation2[0].feature_id).isEqualTo("test-feature-3")
+  }
+
+  @Test
+  fun `getEvaluations - empty if no item`() {
+    val actual = dao.getEvaluations("user id 1")
+
+    assertThat(actual).isEmpty()
+  }
+
+  @Test
+  fun `getEvaluations - empty if target user has no item`() {
+    dao.upsertEvaluation(user2Evaluations.evaluations[0])
+
+    val actual = dao.getEvaluations("user id 1")
+
+    assertThat(actual).isEmpty()
+  }
+
+  @Test
+  fun `getEvaluations - single item`() {
+    dao.upsertEvaluation(evaluation1)
+
+    val actual = dao.getEvaluations("user id 1")
+
+    assertThat(actual).hasSize(1)
+    assertThat(actual[0]).isEqualTo(evaluation1)
+  }
+
+  @Test
+  fun `getEvaluations - multiple item`() {
+    dao.upsertEvaluation(evaluation1)
+    dao.upsertEvaluation(evaluation2)
+    dao.upsertEvaluation(evaluation3)
+
+    val actual = dao.getEvaluations("user id 1")
+
+    assertThat(actual).hasSize(2)
+    assertThat(actual[0]).isEqualTo(evaluation1)
+    assertThat(actual[1]).isEqualTo(evaluation2)
   }
 
   private fun getEvaluations(): Cursor {

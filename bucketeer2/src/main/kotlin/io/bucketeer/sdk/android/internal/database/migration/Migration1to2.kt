@@ -4,7 +4,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 class Migration1to2 : Migration {
 
-  override fun migrate(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
+  override fun migrate(db: SupportSQLiteDatabase) {
     db.execSQL("DROP TABLE current_evaluation")
     db.execSQL("DROP TABLE latest_evaluation")
     db.execSQL("DROP TABLE event")

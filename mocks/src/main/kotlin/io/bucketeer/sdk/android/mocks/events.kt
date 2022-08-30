@@ -68,3 +68,23 @@ val goalEvent2: Event by lazy {
     )
   )
 }
+
+val metricsEvent1: Event by lazy {
+  Event(
+    id = "e1c03cae-367d-4be4-a613-759441a37801",
+    type = EventType.METRICS,
+    event = EventData.MetricsEvent(
+      timestamp = 1661823274,// 2022-08-30 01:34:34
+      event = getEvaluationLatencyMetricsEvent1,
+      type = MetricsEventType.GET_EVALUATION_LATENCY
+    )
+  )
+}
+
+val getEvaluationLatencyMetricsEvent1 = MetricsEventData.GetEvaluationLatencyMetricsEvent(
+  labels = mapOf("tag" to "android", "state" to "FULL"),
+  duration = Duration(
+    seconds = 2,
+    nanos = 123456789
+  )
+)

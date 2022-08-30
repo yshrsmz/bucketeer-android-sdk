@@ -56,17 +56,16 @@ class OpenHelperCallback : SupportSQLiteOpenHelper.Callback(VERSION) {
   }
 
   override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
-    var migratedVersion = oldVersion
-
-    if (migratedVersion == 1) {
-      Migration1to2().migrate(db, oldVersion, newVersion)
-
-      migratedVersion++
+    if (oldVersion < 2) {
+      Migration1to2().migrate(db)
     }
   }
 }
 
-fun createDatabase(context: Context, fileName: String? = OpenHelperCallback.FILE_NAME): SupportSQLiteOpenHelper {
+fun createDatabase(
+  context: Context,
+  fileName: String? = OpenHelperCallback.FILE_NAME
+): SupportSQLiteOpenHelper {
   val config = SupportSQLiteOpenHelper.Configuration.builder(context)
     .name(fileName)
     .callback(OpenHelperCallback())

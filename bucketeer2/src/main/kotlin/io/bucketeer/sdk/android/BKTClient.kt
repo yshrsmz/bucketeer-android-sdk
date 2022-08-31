@@ -1,6 +1,7 @@
 package io.bucketeer.sdk.android
 
 import android.content.Context
+import io.bucketeer.sdk.android.internal.util.CompletedFuture
 import org.json.JSONObject
 import java.util.concurrent.Future
 
@@ -39,6 +40,7 @@ interface BKTClient {
     @Volatile
     private var instance: BKTClient? = null
 
+
     fun getInstance(): BKTClient {
       return requireNotNull(instance) { "BKTClient is not initialized" }
     }
@@ -48,16 +50,17 @@ interface BKTClient {
       context: Context,
       config: BKTConfig,
       user: BKTUser,
-      timeoutMillis: Long = 5000,
-      callback: (isTimeout: Boolean) -> Unit
-    ) {
+      timeoutMillis: Long = 5000
+    ): Future<Unit> {
       if (instance != null) {
-        return
+        return CompletedFuture(Unit)
       }
 
-      val client = BKTClientImpl(context, config, user)
+//      val client = BKTClientImpl(context, config, user)
 
 //      client.fetchEvaluations()
+
+      TODO()
     }
   }
 }

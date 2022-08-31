@@ -2,6 +2,7 @@ package io.bucketeer.sdk.android
 
 import android.app.Application
 import android.content.Context
+import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
@@ -21,17 +22,14 @@ internal class BKTClientImpl(
   user: BKTUser,
   private val userHolder: UserHolder = UserHolder(user.toUser()),
   private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
-  private val dataModule: DataModule = DataModule(
-    application = context.applicationContext as Application,
-    apiKey = config.apiKey,
-    endpoint = config.endpoint,
-    featureTag = config.featureTag
-  ),
-  private val interactorModule: InteractorModule = InteractorModule(
-    config = config,
-    dataModule = dataModule,
-    executor = { executor }
-  ),
+  private val component: Component = Component(
+    dataModule = DataModule(
+      application = context.applicationContext as Application,
+      config = config
+    ),
+    interactorModule = InteractorModule(config = config),
+    executor = executor
+  )
 ) : BKTClient {
 
   override fun stringVariation(featureId: String, defaultValue: String): String {
@@ -58,7 +56,7 @@ internal class BKTClientImpl(
     val user = userHolder.get()
     val featureTag = config.featureTag
     executor.execute {
-      interactorModule.eventInteractor.trackGoalEvent(
+      component.eventInteractor.trackGoalEvent(
         featureTag = featureTag,
         user = user,
         goalId = goalId,
@@ -81,10 +79,10 @@ internal class BKTClientImpl(
 
   override fun fetchEvaluations(): Future<Unit> {
     return executor.submit<Unit> {
-      val result = interactorModule.evaluationInteractor.fetch(user = userHolder.get())
+      val result = component.evaluationInteractor.fetch(user = userHolder.get())
 
       executor.execute {
-        val interactor = interactorModule.eventInteractor
+        val interactor = component.eventInteractor
         when (result) {
           is GetEvaluationsResult.Success -> {
             interactor.trackFetchEvaluationsSuccess(
@@ -108,12 +106,12 @@ internal class BKTClientImpl(
   // should we return Future?
   override fun flush() {
     executor.execute {
-      interactorModule.eventInteractor.sendEvents(force = true)
+      component.eventInteractor.sendEvents(force = true)
     }
   }
 
   override fun evaluationDetails(featureId: String): BKTEvaluation? {
-    val raw = interactorModule.evaluationInteractor
+    val raw = component.evaluationInteractor
       .getLatestAndRefreshCurrent(userHolder.userId, featureId) ?: return null
 
     return BKTEvaluation(
@@ -130,14 +128,14 @@ internal class BKTClientImpl(
   private inline fun <reified T : Any> getVariationValue(featureId: String, defaultValue: T): T {
     logd { "Bucketeer.getVariation(featureId = $featureId, defaultValue = $defaultValue) called" }
 
-    val raw = interactorModule.evaluationInteractor
+    val raw = component.evaluationInteractor
       .getLatestAndRefreshCurrent(userHolder.userId, featureId)
 
     val user = userHolder.get()
     val featureTag = config.featureTag
     if (raw != null) {
       executor.execute {
-        interactorModule.eventInteractor.trackEvaluationEvent(
+        component.eventInteractor.trackEvaluationEvent(
           featureTag = featureTag,
           user = user,
           evaluation = raw
@@ -145,7 +143,7 @@ internal class BKTClientImpl(
       }
     } else {
       executor.execute {
-        interactorModule.eventInteractor.trackDefaultEvaluationEvent(
+        component.eventInteractor.trackDefaultEvaluationEvent(
           featureTag = featureTag,
           user = user,
           featureId = featureId

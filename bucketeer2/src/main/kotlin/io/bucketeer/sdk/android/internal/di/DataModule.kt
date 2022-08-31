@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
+import io.bucketeer.sdk.android.BKTConfig
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.Constants
@@ -30,9 +31,7 @@ import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
 
 internal class DataModule(
   application: Application,
-  apiKey: String,
-  endpoint: String,
-  featureTag: String
+  config: BKTConfig
 ) {
 
   val clock: Clock by lazy { ClockImpl() }
@@ -41,7 +40,14 @@ internal class DataModule(
 
   val moshi: Moshi by lazy { createMoshi() }
 
-  val api: ApiClient = ApiClientImpl(endpoint, apiKey, featureTag, moshi)
+  val apiClient: ApiClient by lazy {
+    ApiClientImpl(
+      config.endpoint,
+      config.apiKey,
+      config.featureTag,
+      moshi
+    )
+  }
 
   private val sqliteOpenHelper: SupportSQLiteOpenHelper by lazy {
     createDatabase(application)

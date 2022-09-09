@@ -7,7 +7,11 @@ import androidx.annotation.VisibleForTesting
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
 import io.bucketeer.sdk.android.BKTConfig
+import io.bucketeer.sdk.android.internal.Clock
+import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.Constants
+import io.bucketeer.sdk.android.internal.IdGenerator
+import io.bucketeer.sdk.android.internal.IdGeneratorImpl
 import io.bucketeer.sdk.android.internal.database.createDatabase
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDao
 import io.bucketeer.sdk.android.internal.evaluation.db.EvaluationDaoImpl
@@ -26,6 +30,10 @@ internal class DataModule(
   application: Application,
   val config: BKTConfig
 ) {
+
+  val clock: Clock by lazy { ClockImpl() }
+
+  val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }
 
   val moshi: Moshi by lazy { createMoshi() }
 

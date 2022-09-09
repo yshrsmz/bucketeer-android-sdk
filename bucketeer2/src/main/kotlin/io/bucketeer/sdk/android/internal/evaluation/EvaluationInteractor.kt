@@ -70,10 +70,8 @@ internal class EvaluationInteractor(
     return result
   }
 
-  fun refreshCache() {
-    val saved = evaluationDao.getAll().groupBy { it.user_id }
-    evaluations.clear()
-    evaluations.putAll(saved)
+  fun refreshCache(userId: String) {
+    evaluations[userId] = evaluationDao.get(userId)
   }
 
   fun getLatest(userId: String, featureId: String): Evaluation? {

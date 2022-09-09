@@ -218,13 +218,10 @@ class EvaluationInteractorTest {
 
     assertThat(interactor.evaluations).isEmpty()
 
-    interactor.refreshCache()
+    interactor.refreshCache(user1.id)
 
     assertThat(interactor.evaluations).containsExactlyEntriesIn(
-      mapOf(
-        user1.id to listOf(evaluation1, evaluation2),
-        user2.id to listOf(evaluation3)
-      )
+      mapOf(user1.id to listOf(evaluation1, evaluation2))
     )
   }
 
@@ -233,7 +230,7 @@ class EvaluationInteractorTest {
     component.dataModule.evaluationDao.put(user1.id, listOf(evaluation1, evaluation2))
     component.dataModule.evaluationDao.put(user2.id, listOf(evaluation3))
 
-    interactor.refreshCache()
+    interactor.refreshCache(user1.id)
 
     val actual = interactor.getLatest(user1.id, evaluation1.feature_id)
 
@@ -251,7 +248,7 @@ class EvaluationInteractorTest {
   fun `getLatest - no corresponding evaluation`() {
     component.dataModule.evaluationDao.put(user1.id, listOf(evaluation1))
 
-    interactor.refreshCache()
+    interactor.refreshCache(user1.id)
 
     val actual = interactor.getLatest(user1.id, "invalid_feature_id")
 

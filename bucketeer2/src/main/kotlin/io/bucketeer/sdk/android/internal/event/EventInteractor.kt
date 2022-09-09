@@ -1,5 +1,6 @@
 package io.bucketeer.sdk.android.internal.event
 
+import androidx.annotation.VisibleForTesting
 import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.event.db.EventDao
@@ -21,9 +22,12 @@ internal class EventInteractor(
   private val idGenerator: IdGenerator,
 ) {
 
-  private val events: AtomicReference<List<Event>> = AtomicReference(emptyList())
+  @VisibleForTesting
+  internal val events: AtomicReference<List<Event>> = AtomicReference(emptyList())
 
-  private var eventUpdateListener: EventUpdateListener? = null
+  @VisibleForTesting
+  internal var eventUpdateListener: EventUpdateListener? = null
+    private set
 
   fun setEventUpdateListener(listener: EventUpdateListener?) {
     this.eventUpdateListener = listener

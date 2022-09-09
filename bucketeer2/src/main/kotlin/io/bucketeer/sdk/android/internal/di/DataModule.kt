@@ -26,14 +26,14 @@ import io.bucketeer.sdk.android.internal.model.jsonadapter.SourceIDAdapter
 import io.bucketeer.sdk.android.internal.remote.ApiClient
 import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
 
-internal class DataModule(
+internal open class DataModule(
   application: Application,
   val config: BKTConfig
 ) {
 
-  val clock: Clock by lazy { ClockImpl() }
+  open val clock: Clock by lazy { ClockImpl() }
 
-  val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }
+  open val idGenerator: IdGenerator by lazy { IdGeneratorImpl() }
 
   val moshi: Moshi by lazy { createMoshi() }
 

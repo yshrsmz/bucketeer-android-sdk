@@ -41,6 +41,10 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+
   lintOptions {
     disable 'InvalidPackage'
     xmlReport true
@@ -59,12 +63,15 @@ androidComponents {
 }
 
 dependencies {
+
   implementation libs.androidx.sqlite
 
   implementation libs.okhttp.client
 
   implementation libs.moshi.kotlin
   ksp(libs.moshi.codegen)
+
+  implementation libs.androidx.process
 
   // Google Play Services
   compileOnly libs.googlePlayServices.basement
@@ -76,4 +83,5 @@ dependencies {
   testImplementation libs.robolectric
   testImplementation libs.androidx.test.core
   testImplementation libs.testParameterInjector
+  testImplementation libs.bundles.mockk
 }

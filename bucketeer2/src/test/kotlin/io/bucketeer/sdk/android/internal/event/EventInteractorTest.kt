@@ -10,7 +10,7 @@ import io.bucketeer.sdk.android.internal.Clock
 import io.bucketeer.sdk.android.internal.ClockImpl
 import io.bucketeer.sdk.android.internal.IdGenerator
 import io.bucketeer.sdk.android.internal.IdGeneratorImpl
-import io.bucketeer.sdk.android.internal.di.Component
+import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
 import io.bucketeer.sdk.android.internal.di.InteractorModule
 import io.bucketeer.sdk.android.internal.model.Duration
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit
 class EventInteractorTest {
   private lateinit var server: MockWebServer
 
-  private lateinit var component: Component
+  private lateinit var component: ComponentImpl
   private lateinit var moshi: Moshi
   private lateinit var idGenerator: FakeIdGenerator
   private lateinit var clock: FakeClock
@@ -56,7 +56,7 @@ class EventInteractorTest {
   fun setup() {
     server = MockWebServer()
 
-    component = Component(
+    component = ComponentImpl(
       dataModule = TestDataModule(
         application = ApplicationProvider.getApplicationContext(),
         config = BKTConfig.builder()
@@ -693,7 +693,7 @@ private class TestDataModule(
   application: Application,
   config: BKTConfig,
   defaultRequestTimeoutMillis: Long,
-) : DataModule(application, user1, config) {
+) : DataModule(application, user1, config, inMemoryDB = true) {
 
   override val clock: Clock by lazy { FakeClock() }
 

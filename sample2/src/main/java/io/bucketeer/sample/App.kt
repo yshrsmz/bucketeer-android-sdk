@@ -56,22 +56,6 @@ class App : Application(), LifecycleObserver {
     }
   }
 
-//  private fun fetchEvaluations(bucketeer: Bucketeer) {
-//    bucketeer.setUser(getUserId())
-//    bucketeer.fetchUserEvaluations(
-//      object : FetchUserEvaluationsCallbackAdapter() {
-//        override fun onSuccess() {
-//          Toast.makeText(this@App, "User Evaluations has been updated", Toast.LENGTH_LONG).show()
-//        }
-//
-//        override fun onError(exception: BucketeerException) {
-//          Toast.makeText(this@App, "onError: $exception", Toast.LENGTH_LONG).show()
-//          exception.printStackTrace()
-//        }
-//      },
-//    )
-//  }
-
   private fun getTag(): String {
     return sharedPref.getString(
       Constants.PREFERENCE_KEY_TAG,
@@ -90,18 +74,3 @@ class App : Application(), LifecycleObserver {
     internal const val TAG = "BucketeerSample"
   }
 }
-
-//internal class AppLifecycleObserver(
-//  private val bucketeer: Bucketeer,
-//) : DefaultLifecycleObserver {
-//
-//  override fun onResume(owner: LifecycleOwner) {
-//    super.onResume(owner)
-//    bucketeer.start()
-//  }
-//
-//  override fun onPause(owner: LifecycleOwner) {
-//    super.onPause(owner)
-//    bucketeer.stop()
-//  }
-//}

@@ -6,7 +6,7 @@ import io.bucketeer.sdk.android.internal.di.Component
 import java.util.concurrent.ScheduledExecutorService
 
 internal class TaskScheduler(
-  component: Component,
+  private val component: Component,
   executor: ScheduledExecutorService,
 ) : DefaultLifecycleObserver {
 
@@ -17,15 +17,22 @@ internal class TaskScheduler(
 
   // app start or back to foreground
   override fun onStart(owner: LifecycleOwner) {
+    // start foreground tasks
     foregroundSchedulers.forEach { it.start() }
 
-    // TODO: stop background tasks
+    // stop background task
+    EvaluationBackgroundTask.stop(component.context)
   }
 
   // to background
   override fun onStop(owner: LifecycleOwner) {
+    // stop foreground tasks
     foregroundSchedulers.forEach { it.stop() }
 
-    // TODO: start background tasks
+    // start background task
+    EvaluationBackgroundTask.start(
+      component.context,
+      component.config.backgroundPollingInterval,
+    )
   }
 }

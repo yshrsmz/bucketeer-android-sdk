@@ -25,7 +25,7 @@ internal class BKTClientImpl(
   private val context: Context,
   private val config: BKTConfig,
   user: BKTUser,
-  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
+  internal val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
   internal val component: Component = ComponentImpl(
     dataModule = DataModule(
       application = context.applicationContext as Application,

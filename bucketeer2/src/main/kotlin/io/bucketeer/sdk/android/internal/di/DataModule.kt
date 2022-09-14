@@ -30,7 +30,7 @@ import io.bucketeer.sdk.android.internal.remote.ApiClientImpl
 import io.bucketeer.sdk.android.internal.user.UserHolder
 
 internal open class DataModule(
-  application: Application,
+  val application: Application,
   user: User,
   val config: BKTConfig,
   val inMemoryDB: Boolean = false,

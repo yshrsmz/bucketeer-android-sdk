@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
-object Futures {
+internal object Futures {
   fun <V> success(value: V): Future<V> = SuccessFuture(value)
   fun <V> failure(error: BKTException): Future<V> = FailureFuture(error)
 }

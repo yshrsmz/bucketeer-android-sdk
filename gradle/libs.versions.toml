@@ -8,6 +8,7 @@ androidxLifecycle = "2.5.1"
 androidxTest = "1.4.0"
 moshi = "1.14.0"
 okhttp = "4.10.0"
+coroutines = "1.6.4"
 
 [libraries]
 grpc-okhttp = { module = "io.grpc:grpc-okhttp", version.ref = "grpc" }
@@ -56,6 +57,8 @@ androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", 
 materialComponents = { module = "com.google.android.material:material", version = "1.6.1" }
 
 stetho = { module = "com.facebook.stetho:stetho", version = "1.6.0" }
+
+kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }

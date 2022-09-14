@@ -2,6 +2,8 @@ package io.bucketeer.sdk.android
 
 import android.app.Application
 import android.content.Context
+import androidx.annotation.MainThread
+import androidx.lifecycle.ProcessLifecycleOwner
 import io.bucketeer.sdk.android.internal.di.Component
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
@@ -10,9 +12,11 @@ import io.bucketeer.sdk.android.internal.evaluation.getVariationValue
 import io.bucketeer.sdk.android.internal.event.SendEventsResult
 import io.bucketeer.sdk.android.internal.logd
 import io.bucketeer.sdk.android.internal.remote.GetEvaluationsResult
+import io.bucketeer.sdk.android.internal.scheduler.TaskScheduler
 import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.internal.user.toUser
 import org.json.JSONObject
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
@@ -73,38 +77,9 @@ internal class BKTClientImpl(
     component.userHolder.updateAttributes { attributes }
   }
 
-  private fun fetchEvaluationsSync(timeoutMillis: Long?): BKTException? {
-    val result = component.evaluationInteractor
-      .fetch(user = component.userHolder.get(), timeoutMillis)
-
-    executor.execute {
-      val interactor = component.eventInteractor
-      when (result) {
-        is GetEvaluationsResult.Success -> {
-          interactor.trackFetchEvaluationsSuccess(
-            featureTag = result.featureTag,
-            mills = result.millis,
-            sizeByte = result.sizeByte,
-          )
-        }
-        is GetEvaluationsResult.Failure -> {
-          interactor.trackFetchEvaluationsFailure(
-            featureTag = result.featureTag,
-            error = result.error,
-          )
-        }
-      }
-    }
-
-    return when (result) {
-      is GetEvaluationsResult.Success -> null
-      is GetEvaluationsResult.Failure -> result.error
-    }
-  }
-
   override fun fetchEvaluations(timeoutMillis: Long?): Future<BKTException?> {
     return executor.submit<BKTException?> {
-      fetchEvaluationsSync(timeoutMillis)
+      fetchEvaluationsSync(component, executor, timeoutMillis)
     }
   }
 
@@ -139,10 +114,12 @@ internal class BKTClientImpl(
     component.evaluationInteractor.refreshCache(component.userHolder.userId)
   }
 
+  @MainThread
   internal fun initializeInternal(timeoutMillis: Long): Future<BKTException?> {
+    scheduleBackgroundTasks()
     return executor.submit<BKTException?> {
       refreshCache()
-      fetchEvaluationsSync(timeoutMillis)
+      fetchEvaluationsSync(component, executor, timeoutMillis)
     }
   }
 
@@ -172,5 +149,45 @@ internal class BKTClientImpl(
     }
 
     return raw.getVariationValue(defaultValue)
+  }
+
+  @MainThread
+  private fun scheduleBackgroundTasks() {
+    ProcessLifecycleOwner.get().lifecycle.addObserver(TaskScheduler(component, executor))
+  }
+
+  companion object {
+    internal fun fetchEvaluationsSync(
+      component: Component,
+      executor: Executor,
+      timeoutMillis: Long?,
+    ): BKTException? {
+      val result = component.evaluationInteractor
+        .fetch(user = component.userHolder.get(), timeoutMillis)
+
+      executor.execute {
+        val interactor = component.eventInteractor
+        when (result) {
+          is GetEvaluationsResult.Success -> {
+            interactor.trackFetchEvaluationsSuccess(
+              featureTag = result.featureTag,
+              mills = result.millis,
+              sizeByte = result.sizeByte,
+            )
+          }
+          is GetEvaluationsResult.Failure -> {
+            interactor.trackFetchEvaluationsFailure(
+              featureTag = result.featureTag,
+              error = result.error,
+            )
+          }
+        }
+      }
+
+      return when (result) {
+        is GetEvaluationsResult.Success -> null
+        is GetEvaluationsResult.Failure -> result.error
+      }
+    }
   }
 }

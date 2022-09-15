@@ -69,8 +69,11 @@ interface BKTClient {
       }
     }
 
+    @MainThread
     fun destroy() {
       synchronized(this) {
+        val client = instance ?: return
+        (client as BKTClientImpl).resetTasks()
         instance = null
       }
     }

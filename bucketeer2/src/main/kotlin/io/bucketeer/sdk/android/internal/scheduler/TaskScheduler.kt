@@ -35,4 +35,9 @@ internal class TaskScheduler(
       component.config.backgroundPollingInterval,
     )
   }
+
+  fun stop() {
+    foregroundSchedulers.forEach { it.stop() }
+    EvaluationBackgroundTask.stop(component.context)
+  }
 }

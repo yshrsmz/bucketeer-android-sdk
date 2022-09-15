@@ -36,6 +36,8 @@ internal class BKTClientImpl(
   ),
 ) : BKTClient {
 
+  private var taskScheduler: TaskScheduler? = null
+
   override fun stringVariation(featureId: String, defaultValue: String): String {
     return getVariationValue(featureId, defaultValue)
   }
@@ -116,7 +118,7 @@ internal class BKTClientImpl(
 
   @MainThread
   internal fun initializeInternal(timeoutMillis: Long): Future<BKTException?> {
-    scheduleBackgroundTasks()
+    scheduleTasks()
     return executor.submit<BKTException?> {
       refreshCache()
       fetchEvaluationsSync(component, executor, timeoutMillis)
@@ -152,8 +154,18 @@ internal class BKTClientImpl(
   }
 
   @MainThread
-  private fun scheduleBackgroundTasks() {
-    ProcessLifecycleOwner.get().lifecycle.addObserver(TaskScheduler(component, executor))
+  private fun scheduleTasks() {
+    taskScheduler = TaskScheduler(component, executor)
+    ProcessLifecycleOwner.get().lifecycle.addObserver(taskScheduler!!)
+  }
+
+  @MainThread
+  internal fun resetTasks() {
+    taskScheduler?.let {
+      it.stop()
+      ProcessLifecycleOwner.get().lifecycle.removeObserver(it)
+    }
+    taskScheduler = null
   }
 
   companion object {

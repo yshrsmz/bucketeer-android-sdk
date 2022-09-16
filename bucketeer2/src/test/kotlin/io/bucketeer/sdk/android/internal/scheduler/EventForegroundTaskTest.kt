@@ -102,7 +102,6 @@ class EventForegroundTaskTest {
     )
 
     task.start()
-    assertThat(task.isStarted).isTrue()
 
     component.eventInteractor.trackEvaluationEvent("feature_tag_value", user1, evaluation1)
     component.eventInteractor.trackEvaluationEvent("feature_tag_value", user1, evaluation2)

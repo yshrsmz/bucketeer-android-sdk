@@ -15,13 +15,24 @@ internal class TaskScheduler(
     EventForegroundTask(component, executor),
   )
 
+  private val backgroundSchedulers: List<ScheduledTask> = listOf(
+    EvaluationBackgroundTask.Scheduler(
+      component.context,
+      component.config.backgroundPollingInterval,
+    ),
+    EventBackgroundTask.Scheduler(
+      component.context,
+      component.config.pollingInterval,
+    ),
+  )
+
   // app start or back to foreground
   override fun onStart(owner: LifecycleOwner) {
     // start foreground tasks
     foregroundSchedulers.forEach { it.start() }
 
     // stop background task
-    EvaluationBackgroundTask.stop(component.context)
+    backgroundSchedulers.forEach { it.stop() }
   }
 
   // to background
@@ -30,14 +41,11 @@ internal class TaskScheduler(
     foregroundSchedulers.forEach { it.stop() }
 
     // start background task
-    EvaluationBackgroundTask.start(
-      component.context,
-      component.config.backgroundPollingInterval,
-    )
+    backgroundSchedulers.forEach { it.start() }
   }
 
   fun stop() {
     foregroundSchedulers.forEach { it.stop() }
-    EvaluationBackgroundTask.stop(component.context)
+    backgroundSchedulers.forEach { it.stop() }
   }
 }

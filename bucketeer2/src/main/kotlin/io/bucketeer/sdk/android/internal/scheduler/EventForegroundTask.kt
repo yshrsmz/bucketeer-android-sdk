@@ -12,9 +12,6 @@ internal class EventForegroundTask(
   private val executor: ScheduledExecutorService,
 ) : ScheduledTask {
 
-  override var isStarted: Boolean = false
-    private set
-
   private var scheduledFuture: ScheduledFuture<*>? = null
 
   private val eventUpdateListener = EventInteractor.EventUpdateListener { _ ->
@@ -37,13 +34,11 @@ internal class EventForegroundTask(
   }
 
   override fun start() {
-    isStarted = true
     component.eventInteractor.setEventUpdateListener(this.eventUpdateListener)
     reschedule()
   }
 
   override fun stop() {
-    isStarted = false
     component.eventInteractor.setEventUpdateListener(null)
     scheduledFuture?.cancel(false)
   }

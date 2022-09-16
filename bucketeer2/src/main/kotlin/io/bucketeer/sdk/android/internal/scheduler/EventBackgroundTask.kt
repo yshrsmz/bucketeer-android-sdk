@@ -13,12 +13,8 @@ import io.bucketeer.sdk.android.internal.logi
 import io.bucketeer.sdk.android.internal.util.createBroadcastPendingIntent
 import io.bucketeer.sdk.android.internal.util.getAlarmManager
 
-internal class EvaluationBackgroundTask : BroadcastReceiver() {
+class EventBackgroundTask : BroadcastReceiver() {
   override fun onReceive(context: Context?, intent: Intent?) {
-    // As we can't serialize logger we need to use BKTClient singleton.
-    // This means
-    // - BKTClient#initialize must be called first
-    // - background polling happens as long as BKTClient singleton lives
     val client = try {
       BKTClient.getInstance() as BKTClientImpl
     } catch (e: Throwable) {
@@ -26,18 +22,19 @@ internal class EvaluationBackgroundTask : BroadcastReceiver() {
     }
 
     if (client == null) {
-      logd { "BKTClient is not initialized, skipping background Evaluation polling..." }
+      logd { "BKTClient is not initialized, skipping background Event sync..." }
       return
     }
+
     val pendingResult = goAsync()
 
     client.executor.execute {
-      val result = BKTClientImpl.fetchEvaluationsSync(client.component, client.executor, null)
+      val result = BKTClientImpl.flushSync(client.component)
 
       if (result == null) {
-        logd { "finished background Evaluation polling" }
+        logd { "finished background event sync" }
       } else {
-        loge(result) { "background Evaluation polling finished with error" }
+        loge(result) { "background Event sync finished with error" }
       }
 
       pendingResult.finish()
@@ -50,9 +47,9 @@ internal class EvaluationBackgroundTask : BroadcastReceiver() {
   ) : ScheduledTask {
     override fun start() {
       stop()
-      logi { "start background Evaluation polling...: $interval" }
+      logi { "start background vnt polling...: $interval" }
 
-      val intent = createBroadcastPendingIntent(context, EvaluationBackgroundTask::class)
+      val intent = createBroadcastPendingIntent(context, EventBackgroundTask::class)
       val alarmManager = context.getAlarmManager()
 
       try {
@@ -63,15 +60,14 @@ internal class EvaluationBackgroundTask : BroadcastReceiver() {
           intent,
         )
       } catch (e: Throwable) {
-        loge(e) { "Error while starting Evaluation background polling" }
+        loge(e) { "Error while starting background Event polling" }
       }
     }
 
     override fun stop() {
-      logi { "stop Evaluation background polling..." }
-      val alarmManager = context.getAlarmManager()
-      val intent = createBroadcastPendingIntent(context, EvaluationBackgroundTask::class)
-      alarmManager.cancel(intent)
+      logi { "stop background Event sync..." }
+      val intent = createBroadcastPendingIntent(context, EventBackgroundTask::class)
+      context.getAlarmManager().cancel(intent)
     }
   }
 }

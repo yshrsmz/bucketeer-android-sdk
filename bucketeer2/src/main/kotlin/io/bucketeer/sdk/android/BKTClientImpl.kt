@@ -87,13 +87,7 @@ internal class BKTClientImpl(
 
   override fun flush(): Future<BKTException?> {
     return executor.submit<BKTException?> {
-      @Suppress("MoveVariableDeclarationIntoWhen")
-      val result = component.eventInteractor.sendEvents(force = true)
-
-      when (result) {
-        is SendEventsResult.Success -> null
-        is SendEventsResult.Failure -> result.error
-      }
+      flushSync(component)
     }
   }
 
@@ -199,6 +193,16 @@ internal class BKTClientImpl(
       return when (result) {
         is GetEvaluationsResult.Success -> null
         is GetEvaluationsResult.Failure -> result.error
+      }
+    }
+
+    @Suppress("MoveVariableDeclarationIntoWhen")
+    internal fun flushSync(component: Component): BKTException? {
+      val result = component.eventInteractor.sendEvents(force = true)
+
+      return when (result) {
+        is SendEventsResult.Success -> null
+        is SendEventsResult.Failure -> result.error
       }
     }
   }

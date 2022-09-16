@@ -15,6 +15,10 @@ import io.bucketeer.sdk.android.internal.util.getAlarmManager
 
 class EventBackgroundTask : BroadcastReceiver() {
   override fun onReceive(context: Context?, intent: Intent?) {
+    // We need to use BKTClient singleton because we can't serialize logger
+    // This means
+    // - BKTClient#initialize must be called first
+    // - background polling happens as long as BKTClient singleton lives
     val client = try {
       BKTClient.getInstance() as BKTClientImpl
     } catch (e: Throwable) {

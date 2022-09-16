@@ -7,7 +7,7 @@ import java.util.concurrent.ScheduledExecutorService
 
 internal class TaskScheduler(
   private val component: Component,
-  executor: ScheduledExecutorService,
+  private val executor: ScheduledExecutorService,
 ) : DefaultLifecycleObserver {
 
   private val foregroundSchedulers: List<ScheduledTask> = listOf(
@@ -39,6 +39,11 @@ internal class TaskScheduler(
   override fun onStop(owner: LifecycleOwner) {
     // stop foreground tasks
     foregroundSchedulers.forEach { it.stop() }
+
+    // flush events before switching to background tasks
+    executor.execute {
+      component.eventInteractor.sendEvents(force = true)
+    }
 
     // start background task
     backgroundSchedulers.forEach { it.start() }

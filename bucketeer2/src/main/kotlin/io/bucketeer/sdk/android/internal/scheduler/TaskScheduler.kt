@@ -22,7 +22,7 @@ internal class TaskScheduler(
     ),
     EventBackgroundTask.Scheduler(
       component.context,
-      component.config.pollingInterval,
+      component.config.eventsFlushInterval,
     ),
   )
 

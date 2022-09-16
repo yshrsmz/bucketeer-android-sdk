@@ -1,11 +1,15 @@
 package io.bucketeer.sdk.android
 
+import io.bucketeer.sdk.android.internal.logw
 import io.bucketeer.sdk.android.internal.util.require
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
-internal const val DEFAULT_FLUSH_INTERVAL_MILLIS: Long = 30_000 // 30 seconds
+internal const val MINIMUM_FLUSH_INTERVAL_MILLIS: Long = 60_000 // 60 seconds
+internal const val DEFAULT_FLUSH_INTERVAL_MILLIS: Long = 60_000 // 60 seconds
 internal const val DEFAULT_MAX_QUEUE_SIZE: Int = 50
+internal const val MINIMUM_POLLING_INTERVAL_MILLIS: Long = 60_000 // 60 seconds
 internal const val DEFAULT_POLLING_INTERVAL_MILLIS: Long = 600_000 // 10 minutes
+internal const val MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 1_200_000 // 20 minutes
 internal const val DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS: Long = 3_600_000 // 1 hour
 
 data class BKTConfig internal constructor(
@@ -77,6 +81,21 @@ data class BKTConfig internal constructor(
       require(!this.apiKey.isNullOrEmpty()) { "apiKey is required" }
       require(this.endpoint?.toHttpUrlOrNull() != null) { "endpoint is invalid" }
       require(!this.featureTag.isNullOrEmpty()) { "featureTag is required" }
+
+      if (this.pollingInterval < MINIMUM_POLLING_INTERVAL_MILLIS) {
+        logw { "pollingInterval: $pollingInterval is set but must be above $MINIMUM_POLLING_INTERVAL_MILLIS" }
+        this.pollingInterval = MINIMUM_POLLING_INTERVAL_MILLIS
+      }
+
+      if (this.backgroundPollingInterval < MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS) {
+        logw { "backgroundPollingInterval: $backgroundPollingInterval is set but must be above $MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS" }
+        this.backgroundPollingInterval = MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS
+      }
+
+      if (this.eventsFlushInterval < MINIMUM_FLUSH_INTERVAL_MILLIS) {
+        logw { "eventsFlushInterval: $eventsFlushInterval is set but must be above $MINIMUM_FLUSH_INTERVAL_MILLIS" }
+        this.eventsFlushInterval = DEFAULT_FLUSH_INTERVAL_MILLIS
+      }
 
       return BKTConfig(
         apiKey = this.apiKey!!,

@@ -103,6 +103,80 @@ class BKTConfigTest {
   }
 
   @Test
+  fun eventsFlushInterval() {
+    val actual = BKTConfig.builder()
+      .apiKey("api-key")
+      .endpoint("https://example.com")
+      .featureTag("feature-tag")
+      .eventsFlushInterval(70_000)
+      .build()
+
+    assertThat(actual.eventsFlushInterval).isEqualTo(70_000)
+  }
+
+  @Test
+  fun `eventsFlushInterval - sooner than min value`() {
+    val actual = BKTConfig.builder()
+      .apiKey("api-key")
+      .endpoint("https://example.com")
+      .featureTag("feature-tag")
+      .eventsFlushInterval(10)
+      .build()
+
+    assertThat(actual.eventsFlushInterval).isEqualTo(MINIMUM_FLUSH_INTERVAL_MILLIS)
+  }
+
+  @Test
+  fun pollingInterval() {
+    val actual = BKTConfig.builder()
+      .apiKey("api-key")
+      .endpoint("https://example.com")
+      .featureTag("feature-tag")
+      .pollingInterval(70_000)
+      .build()
+
+    assertThat(actual.pollingInterval).isEqualTo(70_000)
+  }
+
+  @Test
+  fun `pollingInterval - sooner than min value`() {
+    val actual = BKTConfig.builder()
+      .apiKey("api-key")
+      .endpoint("https://example.com")
+      .featureTag("feature-tag")
+      .pollingInterval(10)
+      .build()
+
+    assertThat(actual.pollingInterval).isEqualTo(MINIMUM_POLLING_INTERVAL_MILLIS)
+  }
+
+  @Test
+  fun backgroundPollingInterval() {
+    val actual = BKTConfig.builder()
+      .apiKey("api-key")
+      .endpoint("https://example.com")
+      .featureTag("feature-tag")
+      .backgroundPollingInterval(1_300_000)
+      .build()
+
+    assertThat(actual.backgroundPollingInterval)
+      .isEqualTo(1_300_000)
+  }
+
+  @Test
+  fun `backgroundPollingInterval - sooner than min value`() {
+    val actual = BKTConfig.builder()
+      .apiKey("api-key")
+      .endpoint("https://example.com")
+      .featureTag("feature-tag")
+      .backgroundPollingInterval(10)
+      .build()
+
+    assertThat(actual.backgroundPollingInterval)
+      .isEqualTo(MINIMUM_BACKGROUND_POLLING_INTERVAL_MILLIS)
+  }
+
+  @Test
   fun `logger - can be null`() {
     val actual = BKTConfig.builder()
       .apiKey("api-key")

@@ -40,6 +40,9 @@ internal class EvaluationBackgroundTask : BroadcastReceiver() {
         loge(result) { "background Evaluation polling finished with error" }
       }
 
+      // send events if needed
+      client.component.eventInteractor.sendEvents(force = false)
+
       pendingResult.finish()
     }
   }

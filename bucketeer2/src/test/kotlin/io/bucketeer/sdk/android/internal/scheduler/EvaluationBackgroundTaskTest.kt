@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import io.bucketeer.sdk.android.BKTClient
 import io.bucketeer.sdk.android.BKTClientImpl
 import io.bucketeer.sdk.android.BKTConfig
+import io.bucketeer.sdk.android.createTestBKTConfig
 import io.bucketeer.sdk.android.internal.user.toBKTUser
 import io.bucketeer.sdk.android.mocks.user1
 import okhttp3.mockwebserver.MockWebServer
@@ -31,11 +32,11 @@ class EvaluationBackgroundTaskTest {
   fun setup() {
     server = MockWebServer()
 
-    config = BKTConfig.builder()
-      .endpoint(server.url("").toString())
-      .apiKey("api_key_value")
-      .featureTag("feature_tag_value")
-      .build()
+    config = createTestBKTConfig(
+      apiKey = "api_key_value",
+      endpoint = server.url("").toString(),
+      featureTag = "feature_tag_value",
+    )
 
     context = ApplicationProvider.getApplicationContext()
   }

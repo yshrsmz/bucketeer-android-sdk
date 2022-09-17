@@ -3,7 +3,7 @@ package io.bucketeer.sdk.android.internal.scheduler
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
-import io.bucketeer.sdk.android.BKTConfig
+import io.bucketeer.sdk.android.createTestBKTConfig
 import io.bucketeer.sdk.android.enqueueResponse
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
@@ -38,16 +38,17 @@ class EventForegroundTaskTest {
   @Before
   fun setup() {
     server = MockWebServer()
+
     component = ComponentImpl(
       dataModule = DataModule(
         application = ApplicationProvider.getApplicationContext(),
-        config = BKTConfig.builder()
-          .endpoint(server.url("").toString())
-          .apiKey("api_key_value")
-          .featureTag("feature_tag_value")
-          .eventsMaxQueueSize(3)
-          .eventsFlushInterval(1000)
-          .build(),
+        config = createTestBKTConfig(
+          apiKey = "api_key_value",
+          endpoint = server.url("").toString(),
+          featureTag = "feature_tag_value",
+          eventsMaxBatchQueueCount = 3,
+          eventsFlushInterval = 1000,
+        ),
         user = user1,
         inMemoryDB = true,
       ),
@@ -82,7 +83,7 @@ class EventForegroundTaskTest {
 
     component.eventInteractor.trackEvaluationEvent("feature_tag_value", user1, evaluation1)
 
-    val (time, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(time).isAtLeast(990)
@@ -102,7 +103,6 @@ class EventForegroundTaskTest {
     )
 
     task.start()
-    assertThat(task.isStarted).isTrue()
 
     component.eventInteractor.trackEvaluationEvent("feature_tag_value", user1, evaluation1)
     component.eventInteractor.trackEvaluationEvent("feature_tag_value", user1, evaluation2)
@@ -112,7 +112,9 @@ class EventForegroundTaskTest {
     // 3rd event should trigger request and reschedule next flushing
     component.eventInteractor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.4)
 
-    val (time, request) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time, request) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
+
+    requireNotNull(request)
     val requestBody = requireNotNull(
       moshi.adapter(RegisterEventsRequest::class.java)
         .fromJson(request.body.readString(Charsets.UTF_8)),
@@ -125,8 +127,9 @@ class EventForegroundTaskTest {
 
     component.eventInteractor.trackGoalEvent("feature_tag_value", user1, "goal_id_value", 0.5)
 
-    val (time2, request2) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time2, request2) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
+    requireNotNull(request2)
     val requestBody2 = requireNotNull(
       moshi.adapter(RegisterEventsRequest::class.java)
         .fromJson(request2.body.readString(Charsets.UTF_8)),

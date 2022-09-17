@@ -31,3 +31,29 @@ internal inline fun <reified T> MockWebServer.enqueueResponse(
       ),
   )
 }
+
+/**
+ * Create [BKTConfig] for testing.
+ * This bypasses validations in [BKTConfig.Builder]
+ */
+internal fun createTestBKTConfig(
+  apiKey: String,
+  endpoint: String,
+  featureTag: String,
+  eventsFlushInterval: Long = DEFAULT_FLUSH_INTERVAL_MILLIS,
+  eventsMaxBatchQueueCount: Int = DEFAULT_MAX_QUEUE_SIZE,
+  pollingInterval: Long = DEFAULT_POLLING_INTERVAL_MILLIS,
+  backgroundPollingInterval: Long = DEFAULT_BACKGROUND_POLLING_INTERVAL_MILLIS,
+  logger: BKTLogger? = null,
+): BKTConfig {
+  return BKTConfig(
+    apiKey = apiKey,
+    endpoint = endpoint,
+    featureTag = featureTag,
+    eventsFlushInterval = eventsFlushInterval,
+    eventsMaxBatchQueueCount = eventsMaxBatchQueueCount,
+    pollingInterval = pollingInterval,
+    backgroundPollingInterval = backgroundPollingInterval,
+    logger = logger,
+  )
+}

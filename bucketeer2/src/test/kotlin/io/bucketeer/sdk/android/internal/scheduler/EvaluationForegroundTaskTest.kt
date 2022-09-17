@@ -3,7 +3,7 @@ package io.bucketeer.sdk.android.internal.scheduler
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
-import io.bucketeer.sdk.android.BKTConfig
+import io.bucketeer.sdk.android.createTestBKTConfig
 import io.bucketeer.sdk.android.enqueueResponse
 import io.bucketeer.sdk.android.internal.di.ComponentImpl
 import io.bucketeer.sdk.android.internal.di.DataModule
@@ -39,13 +39,13 @@ class EvaluationForegroundTaskTest {
     component = ComponentImpl(
       dataModule = DataModule(
         application = ApplicationProvider.getApplicationContext(),
-        config = BKTConfig.builder()
-          .endpoint(server.url("").toString())
-          .apiKey("api_key_value")
-          .featureTag("feature_tag_value")
-          .eventsMaxQueueSize(3)
-          .pollingInterval(1000)
-          .build(),
+        config = createTestBKTConfig(
+          apiKey = "api_key_value",
+          endpoint = server.url("").toString(),
+          featureTag = "feature_tag_value",
+          eventsMaxBatchQueueCount = 3,
+          pollingInterval = 1000,
+        ),
         user = user1,
         inMemoryDB = true,
       ),
@@ -82,7 +82,7 @@ class EvaluationForegroundTaskTest {
     task.start()
     assertThat(server.requestCount).isEqualTo(0)
 
-    val (time, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(server.requestCount).isEqualTo(1)
     assertThat(time).isAtLeast(990)
@@ -137,32 +137,32 @@ class EvaluationForegroundTaskTest {
     task.start()
 
     // initial request
-    val (time1, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(time1).isAtLeast(990)
 
     // retry request 1
-    val (time2, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(time2).isAtLeast(790)
     assertThat(time2).isLessThan(1000)
 
     // retry request 2
-    val (time3, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
     assertThat(time3).isAtLeast(790)
     assertThat(time3).isLessThan(1000)
 
     // retry request 3
-    val (time4, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time4, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
     assertThat(time4).isAtLeast(790)
     assertThat(time4).isLessThan(1000)
 
     // back to normal interval after retryMaxCount
-    val (time5, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time5, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
     assertThat(time5).isAtLeast(990)
 
     // and then retry interval again
-    val (time6, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time6, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
     assertThat(time6).isAtLeast(790)
     assertThat(time6).isLessThan(1000)
   }
@@ -201,18 +201,18 @@ class EvaluationForegroundTaskTest {
     task.start()
 
     // initial request
-    val (time1, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time1, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(time1).isAtLeast(990)
 
     // retry request 1
-    val (time2, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time2, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
 
     assertThat(time2).isAtLeast(790)
     assertThat(time2).isLessThan(1000)
 
     // back to normal interval after successful request
-    val (time3, _) = measureTimeMillisWithResult { server.takeRequest() }
+    val (time3, _) = measureTimeMillisWithResult { server.takeRequest(2, TimeUnit.SECONDS) }
     assertThat(time3).isAtLeast(990)
   }
 }

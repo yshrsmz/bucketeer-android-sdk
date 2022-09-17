@@ -16,9 +16,6 @@ internal class EvaluationForegroundTask(
   private val maxRetryCount: Int = MAX_RETRY_COUNT,
 ) : ScheduledTask {
 
-  override var isStarted: Boolean = false
-    private set
-
   private var scheduledFuture: ScheduledFuture<*>? = null
 
   private var retryCount: Int = 0
@@ -65,12 +62,10 @@ internal class EvaluationForegroundTask(
   }
 
   override fun start() {
-    isStarted = true
     reschedule(component.config.pollingInterval)
   }
 
   override fun stop() {
-    isStarted = false
     scheduledFuture?.cancel(false)
   }
 }

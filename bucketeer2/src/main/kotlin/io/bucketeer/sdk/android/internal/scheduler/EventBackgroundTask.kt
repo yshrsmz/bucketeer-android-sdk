@@ -51,7 +51,7 @@ class EventBackgroundTask : BroadcastReceiver() {
   ) : ScheduledTask {
     override fun start() {
       stop()
-      logi { "start background vnt polling...: $interval" }
+      logi { "start background Event polling...: $interval" }
 
       val intent = createBroadcastPendingIntent(context, EventBackgroundTask::class)
       val alarmManager = context.getAlarmManager()

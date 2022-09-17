@@ -1,8 +1,5 @@
 package io.bucketeer.sample
 
-/**
- * Created by Alessandro Yuichi Okimoto on 2019-12-19.
- */
 class Constants {
 
   companion object {

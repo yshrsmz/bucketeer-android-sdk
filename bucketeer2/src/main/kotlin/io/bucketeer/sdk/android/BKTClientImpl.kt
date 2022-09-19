@@ -102,7 +102,7 @@ internal class BKTClientImpl(
       userId = raw.user_id,
       variationId = raw.variation_id,
       variationValue = raw.variation_value,
-      reason = raw.reason.type.value,
+      reason = BKTEvaluation.Reason.from(raw.reason.type.value),
     )
   }
 
@@ -177,7 +177,7 @@ internal class BKTClientImpl(
           is GetEvaluationsResult.Success -> {
             interactor.trackFetchEvaluationsSuccess(
               featureTag = result.featureTag,
-              mills = result.millis,
+              seconds = result.seconds,
               sizeByte = result.sizeByte,
             )
           }

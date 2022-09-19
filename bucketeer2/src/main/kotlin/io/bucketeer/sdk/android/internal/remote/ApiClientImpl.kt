@@ -12,7 +12,8 @@ import io.bucketeer.sdk.android.internal.model.response.GetEvaluationsResponse
 import io.bucketeer.sdk.android.internal.model.response.RegisterEventsResponse
 import io.bucketeer.sdk.android.internal.util.requireNotNull
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -33,6 +34,7 @@ internal class ApiClientImpl(
   private val endpoint = endpoint.toHttpUrl()
 
   private val client: OkHttpClient = OkHttpClient.Builder()
+    .addNetworkInterceptor(FixJsonContentTypeInterceptor())
     .callTimeout(defaultRequestTimeoutMillis, TimeUnit.MILLISECONDS)
     .build()
 
@@ -92,7 +94,7 @@ internal class ApiClientImpl(
 
       GetEvaluationsResult.Success(
         value = response,
-        millis = millis,
+        seconds = TimeUnit.MILLISECONDS.toSeconds(millis),
         sizeByte = contentLength,
         featureTag = featureTag,
       )
@@ -153,11 +155,29 @@ internal class ApiClientImpl(
 
   private inline fun <reified T> T.toJsonRequestBody(): RequestBody {
     return this.toJson()
-      .toRequestBody("application/json".toMediaTypeOrNull())
+      .toRequestBody("application/json".toMediaType())
   }
 
   private fun Request.Builder.applyHeaders(): Request.Builder {
     return this.header("Authorization", apiKey)
+  }
+}
+
+/**
+ * Interceptor to remove `charset=utf-8` from Content-Type.
+ * OkHttp adds `charset=utf-8` to every Content-Type and there's no official way to fix this.
+ * This interceptor workarounds this by re-creating request with Content-Type without charset.
+ *
+ * https://github.com/square/okhttp/issues/3081#issuecomment-508387187
+ */
+private class FixJsonContentTypeInterceptor : Interceptor {
+  override fun intercept(chain: Interceptor.Chain): Response {
+    val original = chain.request()
+
+    val fixed = original.newBuilder()
       .header("Content-Type", "application/json")
+      .build()
+
+    return chain.proceed(fixed)
   }
 }
